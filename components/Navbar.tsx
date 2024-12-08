@@ -48,8 +48,6 @@ export function Navbar({
     return pathname === href ? "default" : "ghost"
   }
 
-  console.log("user", user)
-
   return (
     <TooltipProvider delayDuration={0}>
       <ResizablePanelGroup
@@ -59,7 +57,7 @@ export function Navbar({
             sizes
           )}`
         }}
-        className="h-full items-stretch"
+        className="h-screen items-stretch"
       >
         <ResizablePanel
           defaultSize={defaultLayout[0]}
@@ -80,6 +78,7 @@ export function Navbar({
             )}`
           }}
           className={cn(
+            "flex flex-col",
             isCollapsed &&
             "min-w-[50px] transition-all duration-300 ease-in-out"
           )}
@@ -203,8 +202,8 @@ export function Navbar({
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={defaultLayout[1]} minSize={82}>
-          <div className="overflow-y-auto max-h-screen">
+        <ResizablePanel defaultSize={defaultLayout[1]} minSize={82} className="relative">
+          <div className="absolute inset-0 overflow-auto">
             {children}
           </div>
         </ResizablePanel>
@@ -212,4 +211,3 @@ export function Navbar({
     </TooltipProvider>
   )
 }
-

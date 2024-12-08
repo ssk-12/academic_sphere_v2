@@ -35,7 +35,7 @@ export function ClassCard({ id, name, description, students }: ClassCardProps) {
   // }
 
   return (
-    <Card className="overflow-hidden">
+    <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl font-bold">{name}</CardTitle>
         <DropdownMenu>

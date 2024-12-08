@@ -1,6 +1,4 @@
 'use client'
-
-import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -9,20 +7,45 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { PlusCircle } from 'lucide-react'
 import { createClass } from '@/actions/class'
 import { useToast } from "@/hooks/use-toast"
-
+import { useActionState, useState, useEffect, useRef } from "react"
 
 export function CreateClassForm() {
   const [open, setOpen] = useState(false)
   const { toast } = useToast()
-
-  async function handleSubmit(formData: FormData) {
-    const result = await createClass(formData)
-    setOpen(false)
-    toast({
-      title: "Success",
-      description: "successfully created class",
-    })
+  const initialState = {
+    message: '',
+    success: true,
   }
+  // const lastMessage = useRef('') 
+  const [state, formAction, isPending] = useActionState(createClass, initialState)
+
+  useEffect(() => {
+    if (state.message) {
+      toast({
+        title: state.success ? 'Success' : 'Error',
+        description: state.message,
+        variant: state.success ? 'default' : 'destructive',
+      });
+    }
+    if(state.success) {
+      setOpen(false)
+    }
+  }, [state]);
+
+  // useEffect(() => {
+  //   if (state.message && state.message !== lastMessage.current) {
+  //     lastMessage.current = state.message
+  //     toast({
+  //       title: state.success ? 'Success' : 'Error',
+  //       description: state.message,
+  //       variant: state.success ? 'default' : 'destructive',
+  //     })
+  //   }
+
+  //   if (state.success) {
+  //     setOpen(false); 
+  //   }
+  // }, [state, toast]) 
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -36,7 +59,7 @@ export function CreateClassForm() {
         <DialogHeader>
           <DialogTitle>Create a New Class</DialogTitle>
         </DialogHeader>
-        <form action={handleSubmit} className="space-y-4">
+        <form action={formAction} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Class Name</Label>
             <Input id="name" name="name" required />
@@ -45,10 +68,9 @@ export function CreateClassForm() {
             <Label htmlFor="description">Description</Label>
             <Textarea id="description" name="description" />
           </div>
-          <Button type="submit" className="w-full">Create</Button>
+          <Button type="submit" className="w-full">{isPending ? 'Creating...' : 'Create Class'}</Button>
         </form>
       </DialogContent>
     </Dialog>
   )
 }
-
