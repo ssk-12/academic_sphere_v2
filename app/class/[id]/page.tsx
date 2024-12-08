@@ -1,5 +1,6 @@
 import { getClass } from '@/actions/class'
 import { ClassOverview } from './components/class-overview'
+import { ClassEvents } from './components/class-events';
 
 
 export default async function ClassPage({ params }: { params: { id: string } }) {
@@ -9,6 +10,7 @@ export default async function ClassPage({ params }: { params: { id: string } }) 
   return (
     <div className="container mx-auto px-4 py-8">
       <ClassOverview classData={classData} />
+      <ClassEvents id={params.id} events={classData?.events || []} />
     </div>
   )
 }
