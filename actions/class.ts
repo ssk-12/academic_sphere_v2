@@ -4,7 +4,6 @@
 import { prisma } from '@/lib/prisma'
 import { getSession } from "@/lib/getSession";
 import { revalidatePath } from 'next/cache'
-import { error } from 'console';
 
 const session = await getSession();
 const user = session?.user;
@@ -43,4 +42,23 @@ export async function getClasses() {
       students: true,
     },
   })
+}
+
+export async function deleteClass(id: string) {
+  try {
+    await prisma.class.delete({
+      where: {
+        id,
+      },
+    })
+
+    revalidatePath('/classes')
+    return { message: 'Class deleted successfully', success: true }
+  } catch (error) {
+    if (error instanceof Error) {
+      return { message: error.message, success: false }
+    } else {
+      return { message: 'An unknown error occurred', success: false }
+    }
+  }
 }
