@@ -8,23 +8,55 @@ datasource db {
 }
 
 model User {
-  id              String    @id @default(cuid())
-  email           String    @unique
-  password        String?   // Nullable for OAuth-based users
-  firstName       String
-  lastName        String
+  id              String       @id @default(cuid())
+  email           String       @unique
+  password        String?
+  fullName        String
   image           String?
-  authProviderId  String?   // For OAuth users (e.g., Google or GitHub)
-  role            Role      @default(USER) // Default role is USER
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  authProviderId  String?
+  role            Role         @default(USER)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  classesCreated  Class[]      @relation("CreatedClasses")
+  classesEnrolled Class[]      @relation("ClassStudents") // Back-relation
+  attendances     Attendance[] @relation("UserAttendances") // Back-relation
 }
 
-model Todo {
-  id        String   @id @default(cuid())
-  title     String
-  completed Boolean  @default(false)
-  createdAt DateTime @default(now())
+model Class {
+  id         String       @id @default(cuid())
+  name       String
+  description String?
+  createdBy  User         @relation("CreatedClasses", fields: [createdById], references: [id])
+  createdById String
+  students   User[]       @relation("ClassStudents") // Back-relation
+  events     Event[]
+  createdAt  DateTime     @default(now())
+}
+
+model Event {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  date        DateTime     @default(now())
+  isLocationBased Boolean  @default(false)
+  locationLat Float?
+  locationLng Float?
+  proximity   Float?
+  class       Class        @relation(fields: [classId], references: [id])
+  classId     String
+  attendances Attendance[]
+}
+
+model Attendance {
+  id          String    @id @default(cuid())
+  present     Boolean
+  student     User      @relation("UserAttendances", fields: [studentId], references: [id]) // Back-relation
+  studentId   String
+  event       Event     @relation(fields: [eventId], references: [id])
+  eventId     String
+  locationLat Float?
+  locationLng Float?
+  checkedAt   DateTime  @default(now())
 }
 
 enum Role {

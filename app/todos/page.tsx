@@ -1,7 +1,6 @@
 import { getTodos } from '../../actions/actions'
 import TodoList from '@/components/TodoList'
 import AddTodo from '@/components/AddTodo'
-import Navbar from '@/components/Navbar'
 
 export default async function Home() {
   const todos: { id: string; title: string; completed: boolean }[] = await getTodos()

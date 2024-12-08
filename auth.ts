@@ -12,6 +12,7 @@ declare module "next-auth" {
     user: {
       id: string;
       role: string;
+      fullName: string;
     } & NextAuthUser;
   }
 }
@@ -37,8 +38,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
 
       authorize: async (credentials) => {
-        const email = credentials?.email;
-        const password = credentials?.password;
+        const email = credentials?.email as string;
+        const password = credentials?.password as string;
 
         if (!email || !password) {
           throw new Error("Please provide both email & password");
@@ -62,8 +63,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         const userData = {
-          firstName: user.firstName,
-          lastName: user.lastName,
+          name: user.fullName,
           email: user.email,
           role: user.role,
           id: user.id,
@@ -83,13 +83,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token?.sub && token?.role) {
         session.user.id = token.sub;
         session.user.role = token.role as string;
+        session.user.name = token.name as string; // Corrected key
       }
       return session;
     },
+    
 
     async jwt({ token, user }) {
       if (user) {
         token.role = (user as any).role as string;
+        token.name = (user as any).name as string; 
       }
       return token;
     },
@@ -98,15 +101,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account?.provider === "google") {
         try {
           const { email, name, image } = user;
+          if (!email) {
+            throw new Error("Email is required");
+          }
+          if (!name) {
+            throw new Error("name is required");
+          }
           const alreadyUser = await prisma.user.findUnique({ where: { email } });
 
           if (!alreadyUser) {
             await prisma.user.create({
               data: {
                 email,
-                name,
                 image,
                 authProviderId: account.providerAccountId,
+                fullName: name
               },
             });
           }
