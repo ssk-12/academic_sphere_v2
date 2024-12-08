@@ -1,4 +1,4 @@
-import { getTodos } from '../actions/actions'
+import { getTodos } from '../../actions/actions'
 import TodoList from '@/components/TodoList'
 import AddTodo from '@/components/AddTodo'
 import Navbar from '@/components/Navbar'
