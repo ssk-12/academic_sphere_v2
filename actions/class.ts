@@ -1,19 +1,18 @@
-// app/api/classes/create/route.ts
+
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { getSession } from "@/lib/getSession";
+
 import { revalidatePath } from 'next/cache'
+import { auth } from '@/auth';
 
-const session = await getSession();
-const user = session?.user;
 
-export async function createClass(state: { message: string; success: boolean },formData: FormData) {
+export async function createClass(state: { message: string; success: boolean, user?: string },formData: FormData) {
   try {
+    const session = await auth();
     const name = formData.get('name') as string
     const description = formData.get('description') as string
-    const createdById = user?.id as string
-
+    const createdById = session?.user.id as string
     if(!description){
       throw new Error('Description is required')
     }
@@ -61,4 +60,22 @@ export async function deleteClass(id: string) {
       return { message: 'An unknown error occurred', success: false }
     }
   }
+}
+
+
+export async function getClass(id: string) {
+  return prisma.class.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      students: true,
+      events: true,
+      createdBy: {
+        select: {
+          fullName: true,
+        },
+      },
+    },
+  });
 }

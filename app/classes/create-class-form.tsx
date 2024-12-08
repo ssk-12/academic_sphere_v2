@@ -9,6 +9,7 @@ import { createClass } from '@/actions/class'
 import { useToast } from "@/hooks/use-toast"
 import { useActionState, useState, useEffect, useRef } from "react"
 
+
 export function CreateClassForm() {
   const [open, setOpen] = useState(false)
   const { toast } = useToast()
