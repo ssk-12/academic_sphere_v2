@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CalendarPlus, MapPin, Clock, MoreVertical } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import {  MapPin, Clock, MoreVertical } from 'lucide-react'
 import { CreateEventForm } from './create-event-form'
 import {
   DropdownMenu,

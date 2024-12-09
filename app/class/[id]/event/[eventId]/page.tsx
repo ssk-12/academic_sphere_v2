@@ -37,7 +37,7 @@ async function EventContent({ id }: { id: string }) {
   if (!event) {
     return <div className="text-center text-xl font-semibold">Event not found</div>
   }
-  //@ts-ignore
+  //@ts-expect-error
   return <EventDetails event={event} />
 }
 

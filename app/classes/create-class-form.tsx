@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { PlusCircle } from 'lucide-react'
 import { createClass } from '@/actions/class'
 import { useToast } from "@/hooks/use-toast"
-import { useActionState, useState, useEffect, useRef } from "react"
+import { useActionState, useState, useEffect } from "react"
 
 
 export function CreateClassForm() {

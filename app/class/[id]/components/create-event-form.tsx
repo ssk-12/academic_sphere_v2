@@ -14,7 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { PlusCircle } from "lucide-react";
 import { createEvent } from "@/actions/class";
 import { useToast } from "@/hooks/use-toast";
-import { useActionState, useState, useEffect } from "react";
+import { useActionState, useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -73,6 +73,10 @@ export function CreateEventForm({ id }: { id: string }) {
 
   const { isLocationBased } = form.watch();
 
+  const resetForm = useCallback(() => {
+    form.reset();
+  }, [form]);
+  
   useEffect(() => {
     if (state.message) {
       toast({
@@ -80,13 +84,15 @@ export function CreateEventForm({ id }: { id: string }) {
         description: state.message,
         variant: state.success ? "default" : "destructive",
       });
-
+  
       if (state.success) {
         setOpen(false);
-        form.reset();
+        resetForm();
       }
     }
-  }, [state, toast]);
+  }, [state, toast, resetForm]);
+  
+  
 
   const fetchLocation = async () => {
     if ("geolocation" in navigator) {

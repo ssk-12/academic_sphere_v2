@@ -8,8 +8,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface Student {
   id: string;
@@ -59,12 +58,7 @@ const attendanceColumns: ColumnDef<Attendance>[] = [
   },
 ];
 
-const studentColumns: ColumnDef<Student>[] = [
-  {
-    accessorKey: "name",
-    header: "Student Name",
-  },
-];
+
 
 export function EventDetails({ event }: EventDetailsProps) {
   const [searchTerm, setSearchTerm] = useState("");
