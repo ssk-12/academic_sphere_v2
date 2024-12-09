@@ -35,11 +35,56 @@ export async function createClass(state: { message: string; success: boolean, us
   }
 }
 
+export async function enrollClass(state: { message: string; success: boolean, user?: string },formData: FormData) { 
+  try {
+    const session = await auth();
+    const classId = formData.get('id') as string
+    const studentId = session?.user.id as string
+    await prisma.class.update({
+      where: {
+        id: classId,
+      },
+      data: {
+        students: {
+          connect: {
+            id: studentId,
+          },
+        },
+      },
+    })
+
+    revalidatePath('/classes')
+    return { message: 'Class enrolled successfully', success: true }
+  } catch (error) {
+    if (error instanceof Error) {
+      return { message: error.message, success: false }
+    } else {
+      return { message: 'An unknown error occurred', success: false }
+    }
+  }
+}
+
 export async function getClasses() {
+  const session = await auth()
+  const createdById = session?.user.id as string
   return prisma.class.findMany({
     include: {
       students: true,
     },
+    where:{
+      OR: [
+        {
+          createdById,
+        },
+        {
+          students: {
+            some: {
+              id: createdById,
+            },
+          },
+        },
+      ],
+    }
   })
 }
 

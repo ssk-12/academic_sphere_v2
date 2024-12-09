@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import { CreateClassForm } from './create-class-form'
+import { EnrollClassForm } from './enroll-class-form'
 import { ClassCard } from './class-card'
 import { getClasses } from '@/actions/class'
 import { Skeleton } from "@/components/ui/skeleton"
@@ -31,7 +32,10 @@ export default function ClassesPage() {
     <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h1 className="text-3xl font-bold">Classes</h1>
-        <CreateClassForm />
+        <div className="flex gap-4">
+          <CreateClassForm />
+          <EnrollClassForm />
+        </div>
       </div>
       <Suspense fallback={<ClassesSkeleton />}>
         <ClassesList />
