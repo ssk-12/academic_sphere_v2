@@ -5,7 +5,7 @@ import { ClassEvents } from './components/class-events'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default async function ClassPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+  const { id } = await params;
 
   return (
     <div className="container mx-auto px-3 py-2">

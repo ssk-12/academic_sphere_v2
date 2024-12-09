@@ -4,7 +4,10 @@ import { EventDetails } from "./components/EventDetails"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 
+
+
 export default async function Event({ params }: { params: { eventId: string } }) {
+  const { eventId } = await params;
   return (
     <div className="container mx-auto py-8">
       <Suspense fallback={<EventSkeleton />}>
