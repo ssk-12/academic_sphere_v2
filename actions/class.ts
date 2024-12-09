@@ -177,3 +177,25 @@ export async function createEvent(state: { message: string; success: boolean, lo
   }
 }
 
+
+export async function getEvent(id: string) {
+  return prisma.event.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      class: {
+        include: {
+          students: true, // List of all students in the class
+          createdBy: true, // Information about who created the class
+        },
+      },
+      attendances: {
+        include: {
+          student: true, // Information about the student marked present
+        },
+      },
+    },
+  });
+}
+

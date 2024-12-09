@@ -55,7 +55,7 @@ export function ClassEvents({ events, id }: { events: Event[], id: string }) {
   }
 
   const handleEventClick = (eventId: string) => {
-    router.push(`/class/${id}/events/${eventId}`)
+    router.push(`/class/${id}/event/${eventId}`)
   }
 
   return (
