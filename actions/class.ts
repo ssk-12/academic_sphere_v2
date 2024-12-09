@@ -116,7 +116,10 @@ export async function createEvent(state: { message: string; success: boolean, lo
         locationLng: locationLng,
         proximity: isLocationBased ? Number(formData.get('proximity') as unknown as string) : null,
       },
+      
     });
+
+    revalidatePath('/class')
 
     console.dir(formData, {depth: null});
     return { message: 'Event created successfully', success: true };
