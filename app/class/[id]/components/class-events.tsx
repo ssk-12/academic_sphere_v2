@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CalendarPlus, MapPin, Clock, MoreVertical } from 'lucide-react'
@@ -13,33 +14,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-
 type Event = {
-
-  name: string;
-
-  description: string | null;
-
-  id: string;
-
-  date: Date;
-
-  isLocationBased: boolean;
-
-  locationLat: number | null;
-
-  locationLng: number | null;
-
-  proximity: number | null;
-
-  classId: string;
-
-  formattedDate?: string;
-
-};
+  name: string
+  description: string | null
+  id: string
+  date: Date
+  isLocationBased: boolean
+  locationLat: number | null
+  locationLng: number | null
+  proximity: number | null
+  classId: string
+  formattedDate?: string
+}
 
 export function ClassEvents({ events, id }: { events: Event[], id: string }) {
   const [formattedEvents, setFormattedEvents] = useState<Event[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     const formatted = events.map(event => ({
@@ -64,12 +54,16 @@ export function ClassEvents({ events, id }: { events: Event[], id: string }) {
     alert(`Delete event ${eventId}`)
   }
 
+  const handleEventClick = (eventId: string) => {
+    router.push(`/class/${id}/events/${eventId}`)
+  }
+
   return (
     <div className="mx-1 mt-2">
       <Card className="w-full">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-2xl font-bold">Class Events</CardTitle>
-          <Dialog>
+          {/* <Dialog>
             <DialogTrigger asChild>
               <Button>
                 <CalendarPlus className="mr-2 h-4 w-4" />
@@ -80,9 +74,10 @@ export function ClassEvents({ events, id }: { events: Event[], id: string }) {
               <DialogHeader>
                 <DialogTitle>Create New Event</DialogTitle>
               </DialogHeader>
-              <CreateEventForm id={id} />
+              
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
+          <CreateEventForm id={id} />
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
@@ -90,7 +85,11 @@ export function ClassEvents({ events, id }: { events: Event[], id: string }) {
               <p className="text-center text-muted-foreground py-4">No events scheduled yet.</p>
             ) : (
               formattedEvents.map((event) => (
-                <Card key={event.id}>
+                <Card
+                  key={event.id}
+                  onClick={() => handleEventClick(event.id)}
+                  className="cursor-pointer hover:shadow-lg transition"
+                >
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start">
                       <div className="space-y-2">
@@ -101,9 +100,11 @@ export function ClassEvents({ events, id }: { events: Event[], id: string }) {
                             <Clock className="mr-1 h-4 w-4" />
                             {event.formattedDate}
                           </div>
-                          {event.isLocationBased && <div className="flex items-center">
-                            <MapPin className="mr-1 h-4 w-4" />
-                          </div>}
+                          {event.isLocationBased && (
+                            <div className="flex items-center">
+                              <MapPin className="mr-1 h-4 w-4" />
+                            </div>
+                          )}
                         </div>
                       </div>
                       <DropdownMenu>
@@ -116,7 +117,7 @@ export function ClassEvents({ events, id }: { events: Event[], id: string }) {
                           <DropdownMenuItem onClick={() => handleEdit(event.id)}>
                             Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             onClick={() => handleDelete(event.id)}
                             className="text-destructive"
                           >
@@ -135,4 +136,3 @@ export function ClassEvents({ events, id }: { events: Event[], id: string }) {
     </div>
   )
 }
-
