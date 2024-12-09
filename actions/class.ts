@@ -80,34 +80,52 @@ export async function getClass(id: string) {
   });
 }
 
-export async function createEvent(state: { message: string; success: boolean, id?: string}, formData: FormData){
-  const classInfo = await getClass(state?.id as string)
-  if(!classInfo){
-    throw new Error('Class not found')
+export async function createEvent(state: { message: string; success: boolean, locationData?:{locationData: any}}, formData: FormData){
+  const classId = formData.get('id') as string
+  const classInfo = await getClass(classId);
+  if (!classInfo) {
+    throw new Error('Class not found');
   }
-  const name = formData.get('name') as string
-  const description = formData.get('description') as string
-  const isLocationBased = formData.get('isLocationBased') === 'true';
-  try {
 
+  const name = formData.get('name') as string;
+  const description = formData.get('description') as string;
+  const date = new Date(formData.get('date') as string);
+  const isLocationBased = formData.get('isLocationBased') === 'true';
+
+
+
+  let locationLat: number | null = null;
+  let locationLng: number | null = null;
+
+  const location = formData.get('location') as string;
+  if (location && isLocationBased) {
+    const [lat, lng] = location.split(',').map(coord => parseFloat(coord.trim()));
+    locationLat = lat || null;
+    locationLng = lng || null;
+  }
+
+  try {
     await prisma.event.create({
       data: {
-        classId: state.id as string,
+        classId: classId,
         name: name,
         description: description,
-        date: new Date(),
+        date: date, 
         isLocationBased: isLocationBased,
+        locationLat: locationLat,
+        locationLng: locationLng,
+        proximity: isLocationBased ? Number(formData.get('proximity') as unknown as string) : null,
       },
-    })
+    });
 
-    return { message: 'Event created successfully', success: true }
-    
+    console.dir(formData, {depth: null});
+    return { message: 'Event created successfully', success: true };
   } catch (error) {
     if (error instanceof Error) {
-      return { message: error.message, success: false }
+      return { message: error.message, success: false };
     } else {
-      return { message: 'An unknown error occurred', success: false }
+      return { message: 'An unknown error occurred', success: false };
     }
-    
   }
 }
+
