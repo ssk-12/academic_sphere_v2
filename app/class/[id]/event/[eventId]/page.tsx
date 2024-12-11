@@ -6,12 +6,16 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 
 
-export default async function Event({ params }: { params: { eventId: string } }) {
+export default async function Event({
+  params,
+}: {
+  params: Promise<{ eventId: string }>
+}) {
   const { eventId } = await params;
   return (
     <div className="container mx-auto py-8">
       <Suspense fallback={<EventSkeleton />}>
-        <EventContent id={params.eventId} />
+        <EventContent id={eventId} />
       </Suspense>
     </div>
   )

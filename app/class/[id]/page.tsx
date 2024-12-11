@@ -4,7 +4,11 @@ import { ClassOverview } from './components/class-overview'
 import { ClassEvents } from './components/class-events'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export default async function ClassPage({ params }: { params: { id: string } }) {
+export default async function ClassPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
   const { id } = await params;
 
   return (
