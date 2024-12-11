@@ -37,6 +37,8 @@ export default async function RootLayout({
   const defaultLayout = layout ? JSON.parse(layout.value) : undefined;
   const defaultCollapsed = collapsed ? JSON.parse(collapsed.value) : undefined;
 
+  console.log(defaultLayout, defaultCollapsed);
+
   return (
     <html lang="en" className="h-full">
       <body

@@ -12,7 +12,7 @@ export default async function ClassPage({
   const { id } = await params;
 
   return (
-    <div className="container mx-auto px-3 py-2">
+    <div className="container mx-auto px-3">
       <Suspense fallback={<ClassOverviewSkeleton />}>
         <ClassOverviewWrapper id={id} />
       </Suspense>

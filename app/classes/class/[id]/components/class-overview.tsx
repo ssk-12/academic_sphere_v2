@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CalendarDays, Users } from 'lucide-react'
 
 export function ClassOverview({ classData }: { classData: any }) {
-  console.log(classData)
+  // console.log(classData)
   return (
     <Card>
       <CardHeader>

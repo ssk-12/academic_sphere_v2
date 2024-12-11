@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { MarkAttendanceForm } from "./mark-attendance-form";
 
 interface Student {
   id: string;
@@ -73,7 +74,7 @@ export function EventDetails({ event }: EventDetailsProps) {
 
   return (
     <div>
-  <div className="max-w-7xl mx-auto space-y-10">
+  <div className="max-w-7xl mx-auto space-y-4">
     {/* Event Information Card */}
     <Card className="bg-white/10 bg-gradient-to-b from-black to-gray-900 backdrop-blur-md dark:bg-gray-800/50 border-white/10 shadow-2xl">
       <CardHeader className="space-y-2">
@@ -125,8 +126,9 @@ export function EventDetails({ event }: EventDetailsProps) {
         </div>
 
         {event.isLocationBased && (
-          <section className="space-y-3">
-            <h3 className="text-2xl font-semibold text-white bg-gradient-to-r from-gray-500 to-gray-300 bg-clip-text text-transparent">
+          <section className="space-y-3 flex items-center justify-between">
+           <div>
+           <h3 className="text-2xl font-semibold text-white bg-gradient-to-r from-gray-500 to-gray-300 bg-clip-text text-transparent">
               Location Information
             </h3>
             <div className="space-y-3">
@@ -142,12 +144,14 @@ export function EventDetails({ event }: EventDetailsProps) {
               {event.proximity && (
                 <Badge
                   variant="secondary"
-                  className="w-fit text-white hover:bg-white/20 transition-colors"
+                  className="w-fit text-white bg-white/20 hover:text-black transition-colors"
                 >
                   Proximity: {event.proximity} meters
                 </Badge>
               )}
             </div>
+           </div>
+           <MarkAttendanceForm id={event.id} evlocationLng={event.locationLng} evlocationLat={event.locationLat}/>
           </section>
         )}
       </CardContent>
@@ -186,10 +190,23 @@ export function EventDetails({ event }: EventDetailsProps) {
           </TabsList>
           <TabsContent value="attendance" className="mt-6">
             <div className="rounded-lg border bg-white/20 dark:bg-gray-800/30">
-              <DataTable
-                columns={attendanceColumns}
-                data={filteredAttendances}
-              />
+            {filteredAttendances.map((attendance) => (
+                <Card
+                  key={attendance.student.id}
+                  className="group hover:shadow-md transition-all bg-white/20 dark:bg-gray-800/30"
+                >
+                  <CardContent className="flex items-center gap-4 p-4">
+                    <Avatar className="h-12 w-12 border-2 border-transparent group-hover:border-white/20 transition-colors">
+                      <AvatarFallback className="bg-gray-100 dark:bg-gray-900 text-lg">
+                        {attendance.student.fullName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="font-medium text-white group-hover:text-white/80 transition-colors">
+                      {attendance.student.fullName}
+                    </span>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </TabsContent>
           <TabsContent value="students" className="mt-6">

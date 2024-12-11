@@ -2,7 +2,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-
+import { haversineDistance } from '@/lib/utils';
 import { revalidatePath } from 'next/cache'
 import { auth } from '@/auth';
 
@@ -166,7 +166,7 @@ export async function createEvent(state: { message: string; success: boolean, lo
 
     revalidatePath('/class')
 
-    console.dir(formData, {depth: null});
+    // console.dir(formData, {depth: null});
     return { message: 'Event created successfully', success: true };
   } catch (error) {
     if (error instanceof Error) {
@@ -179,6 +179,45 @@ export async function createEvent(state: { message: string; success: boolean, lo
 
 
 export async function getEvent(id: string) {
+  const session = await auth();
+  const userId = session?.user.id as string;
+  const createdById = await prisma.event.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      class: {
+        select: {
+          createdById: true,
+        },
+      },
+    }
+  });
+  // console.log('createdById', createdById);
+  // console.log('userId', userId);
+  if(createdById?.class.createdById !== userId){
+    return prisma.event.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        class: {
+          include: {
+            students: true, 
+            createdBy: true, 
+          },
+        },
+        attendances: {
+          include: {
+            student: true,
+          },
+          where:{
+            studentId: userId
+          }
+        },
+      },
+    });
+  }
   return prisma.event.findUnique({
     where: {
       id,
@@ -186,16 +225,91 @@ export async function getEvent(id: string) {
     include: {
       class: {
         include: {
-          students: true, // List of all students in the class
-          createdBy: true, // Information about who created the class
+          students: true, 
+          createdBy: true, 
         },
       },
       attendances: {
         include: {
-          student: true, // Information about the student marked present
+          student: true,
         },
       },
     },
   });
 }
 
+export async function markAttendance(
+  state: { message: string; success: boolean },
+  formData: FormData
+) {
+  const eventId = formData.get('id') as string;
+  const user = await auth();
+  const studentId = user?.user.id as string;
+  const event = await getEvent(eventId);
+  const evlocationLat = parseFloat(formData.get('evlocationLat') as string);
+  const evlocationLng = parseFloat(formData.get('evlocationLng') as string);
+
+  let locationLat: number | null = null;
+  let locationLng: number | null = null;
+
+  try {
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    const location = formData.get('location') as string;
+    if (location) {
+      const [lat, lng] = location.split(',').map(coord => parseFloat(coord.trim()));
+      locationLat = lat || null;
+      locationLng = lng || null;
+    }
+
+    if (locationLat === null || locationLng === null) {
+      throw new Error('User location is invalid or missing');
+    }
+
+    const proximityRange = event?.proximity || null;
+    if ( !proximityRange) {
+      throw new Error('proximity not found');
+    }
+    const distance = haversineDistance(
+      locationLat,
+      locationLng,
+      evlocationLat,
+      evlocationLng
+    );
+
+    // console.log('Distance:', distance);
+
+    if (distance > proximityRange) {
+      throw new Error('User is outside the allowed proximity range');
+    }
+
+    await prisma.attendance.create({
+      data: {
+        event: {
+          connect: {
+            id: eventId,
+          },
+        },
+        student: {
+          connect: {
+            id: studentId,
+          },
+        },
+        checkedAt: new Date(),
+        present: true,
+      },
+    });
+
+    
+
+    return { message: 'Attendance marked successfully', success: true };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { message: error.message, success: false };
+    } else {
+      return { message: 'An unknown error occurred', success: false };
+    }
+  }
+}

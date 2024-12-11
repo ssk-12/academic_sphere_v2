@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal, Users } from 'lucide-react'
-// import { deleteClass, duplicateClass } from '../actions/class-actions'
 import { useToast } from "@/hooks/use-toast"
 import { deleteClass } from "@/actions/class"
 
@@ -23,7 +22,7 @@ export function ClassCard({ id, name, description, students }: ClassCardProps) {
   const router = useRouter()
 
   const handleCardClick = () => {
-    router.push(`/class/${id}`)
+    router.push(`classes/class/${id}`)
   }
   // async function handleDelete() {
   //   const result = await deleteClass(id)

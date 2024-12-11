@@ -57,7 +57,7 @@ export function Navbar({
   const pathname = usePathname();
 
   const getNavItemVariant = (href: string) => {
-    return pathname === href ? "default" : "ghost";
+    return pathname.startsWith(href)  ? "default" : "ghost";
   };
 
   return (
@@ -79,12 +79,15 @@ export function Navbar({
           maxSize={18}
           onCollapse={() => {
             setIsCollapsed(true);
+            alert("collapsed");
             document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
               true
             )}`;
+            
           }}
           onExpand={() => {
             setIsCollapsed(false);
+            alert("expanded");
             document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
               false
             )}`;

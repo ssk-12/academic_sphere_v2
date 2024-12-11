@@ -77,6 +77,7 @@ export function CreateEventForm({ id }: { id: string }) {
     form.reset();
   }, [form]);
   
+  
   useEffect(() => {
     if (state.message) {
       toast({
@@ -90,7 +91,8 @@ export function CreateEventForm({ id }: { id: string }) {
         resetForm();
       }
     }
-  }, [state, toast, resetForm]);
+  }, [state, toast]);
+  
   
   
 

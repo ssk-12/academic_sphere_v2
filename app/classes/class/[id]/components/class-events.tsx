@@ -54,28 +54,14 @@ export function ClassEvents({ events, id }: { events: Event[], id: string }) {
   }
 
   const handleEventClick = (eventId: string) => {
-    router.push(`/class/${id}/event/${eventId}`)
+    router.push(`event/${eventId}`)
   }
 
   return (
-    <div className="mx-1 mt-2">
+    <div className="mx-1 ">
       <Card className="w-full">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-2xl font-bold">Class Events</CardTitle>
-          {/* <Dialog>
-            <DialogTrigger asChild>
-              <Button>
-                <CalendarPlus className="mr-2 h-4 w-4" />
-                Add Event
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Create New Event</DialogTitle>
-              </DialogHeader>
-              
-            </DialogContent>
-          </Dialog> */}
           <CreateEventForm id={id} />
         </CardHeader>
         <CardContent>

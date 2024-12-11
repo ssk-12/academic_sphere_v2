@@ -13,7 +13,7 @@ export default async function Event({
 }) {
   const { eventId } = await params;
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto py-2">
       <Suspense fallback={<EventSkeleton />}>
         <EventContent id={eventId} />
       </Suspense>
@@ -23,6 +23,7 @@ export default async function Event({
 
 async function EventContent({ id }: { id: string }) {
   let event = await getEvent(id)
+  // console.dir(event, {depth: null});
   if (!event) {
     return <div className="text-center text-xl font-semibold">Event not found</div>
   }
