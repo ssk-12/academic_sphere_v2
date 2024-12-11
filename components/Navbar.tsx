@@ -121,7 +121,7 @@ export function Navbar({
                   label: "",
                   icon: LayoutDashboard,
                   variant: getNavItemVariant("/dashboard"),
-                  href: "/",
+                  href: "/dashboard",
                 },
                 {
                   title: "Classes",

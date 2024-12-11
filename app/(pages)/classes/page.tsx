@@ -29,7 +29,7 @@ async function ClassesList() {
 
 export default function ClassesPage() {
   return (
-    <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <div className="container mx-auto p-2 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h1 className="text-3xl font-bold">Classes</h1>
         <div className="flex gap-4">
