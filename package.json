@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
+  "build": "npx prisma generate && next build",
+  "dev": "next dev",
+  "start": "next start",
+  "postinstall": "npx prisma generate"
+},
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@prisma/client": "^6.0.1",
