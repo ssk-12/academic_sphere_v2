@@ -79,7 +79,7 @@ export function Navbar({
           maxSize={18}
           onCollapse={() => {
             setIsCollapsed(true);
-            alert("collapsed");
+           
             document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
               true
             )}`;
@@ -87,7 +87,7 @@ export function Navbar({
           }}
           onExpand={() => {
             setIsCollapsed(false);
-            alert("expanded");
+            
             document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
               false
             )}`;
