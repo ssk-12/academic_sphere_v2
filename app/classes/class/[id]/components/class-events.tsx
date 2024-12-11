@@ -58,7 +58,7 @@ export function ClassEvents({ events, id }: { events: Event[], id: string }) {
   }
 
   return (
-    <div className="mx-1 ">
+    <div className="mx-[3px] my-4">
       <Card className="w-full">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-2xl font-bold">Class Events</CardTitle>

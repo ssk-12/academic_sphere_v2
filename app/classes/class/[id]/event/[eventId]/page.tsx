@@ -49,19 +49,13 @@ async function EventContent({ id }: { id: string }) {
 
 function EventSkeleton() {
   return (
-    <Card className="w-full max-w-3xl mx-auto">
-      <CardHeader>
-        <CardTitle><Skeleton className="h-8 w-3/4" /></CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-3/4" />
-        <Skeleton className="h-4 w-1/2" />
-        <div className="grid grid-cols-2 gap-4">
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-20 w-full" />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="space-y-4">
+    <Skeleton className=" h-64 w-full" />
+    <Skeleton className=" h-10 w-1/2" />
+    <div className="flex space-x-2">
+      <Skeleton className="h-10 w-20" />
+      <Skeleton className="h-10 w-20" />
+    </div>
+  </div>
   )
 }

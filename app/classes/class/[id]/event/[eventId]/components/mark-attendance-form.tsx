@@ -112,7 +112,7 @@ export function MarkAttendanceForm({ id, evlocationLat, evlocationLng }: { id: s
       }}
     >
       <DialogTrigger asChild>
-        <Button className="gap-2" onClick={() => setOpen(true)}>
+        <Button className="gap-2 bg-white text-black hover:text-white" onClick={() => setOpen(true)}>
           <PlusCircle className="h-5 w-5" />
           Mark attendance Event
         </Button>
