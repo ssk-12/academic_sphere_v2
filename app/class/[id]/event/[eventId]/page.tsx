@@ -27,25 +27,23 @@ async function EventContent({ id }: { id: string }) {
     return <div className="text-center text-xl font-semibold">Event not found</div>
   }
 
-  event = {
+  const mappedEvent = {
     ...event,
     class: {
       ...event.class,
-      students: event.class.students.map(student => ({
-        ...student,
-        name: student.fullName || "Unknown",
-        ...student
-      }))
-    }
-  }
-  console.log(event)
+      createdBy: {
+        ...event.class.createdBy,
+        name: event.class.createdBy.fullName,
+      },
+    },
+  };
+
   
 
   if (!event) {
     return <div className="text-center text-xl font-semibold">Event not found</div>
   }
-  //@ts-expect-error
-  return <EventDetails event={event} />
+  return <EventDetails event={mappedEvent} />
 }
 
 function EventSkeleton() {

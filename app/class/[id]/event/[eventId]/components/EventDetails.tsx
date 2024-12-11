@@ -12,13 +12,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface Student {
   id: string;
-  name: string;
+  fullName: string;
 }
 
 interface Attendance {
   id: string;
   student: Student;
-  createdAt: Date;
+  checkedAt: Date;
 }
 
 interface EventDetailsProps {
@@ -37,7 +37,7 @@ interface EventDetailsProps {
       students: Student[];
       createdBy: {
         id: string;
-        name: string;
+        fullName: string;
       };
     };
     attendances: Attendance[];
@@ -50,10 +50,10 @@ const attendanceColumns: ColumnDef<Attendance>[] = [
     header: "Student Name",
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "checkedAt",
     header: "Attendance Time",
     cell: ({ row }) => {
-      return new Date(row.getValue("createdAt")).toLocaleString();
+      return new Date(row.getValue("checkedAt")).toLocaleString();
     },
   },
 ];
@@ -64,11 +64,11 @@ export function EventDetails({ event }: EventDetailsProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredAttendances = event.attendances.filter((attendance) =>
-    attendance.student.name.toLowerCase().includes(searchTerm.toLowerCase())
+    attendance.student.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredStudents = event.class.students.filter((student) =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+    student.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -118,7 +118,7 @@ export function EventDetails({ event }: EventDetailsProps) {
               </div>
               <div className="flex items-center gap-2 hover:text-opacity-100 transition-colors">
                 <UserIcon className="w-5 h-5" />
-                <span>Created by {event.class.createdBy.name}</span>
+                <span>Created by {event.class.createdBy.fullName}</span>
               </div>
             </div>
           </section>
@@ -202,11 +202,11 @@ export function EventDetails({ event }: EventDetailsProps) {
                   <CardContent className="flex items-center gap-4 p-4">
                     <Avatar className="h-12 w-12 border-2 border-transparent group-hover:border-white/20 transition-colors">
                       <AvatarFallback className="bg-gray-100 dark:bg-gray-900 text-lg">
-                        {student.name.charAt(0)}
+                        {student.fullName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <span className="font-medium text-white group-hover:text-white/80 transition-colors">
-                      {student.name}
+                      {student.fullName}
                     </span>
                   </CardContent>
                 </Card>
