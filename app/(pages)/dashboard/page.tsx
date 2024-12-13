@@ -15,40 +15,22 @@ export default function ElevateLandingPage() {
           <span className=" font-bold h-6 ">Elevate</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#features">
             Features
           </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#pricing">
             Pricing
           </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#about">
             About
           </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#contact">
             Contact
           </Link>
         </nav>
       </header>
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                  Welcome to Elevate
-                </h1>
-                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  Your one-stop platform for student management, LMS, and streamlined educational processes.
-                </p>
-              </div>
-              <div className="space-x-4">
-                <Button>Get Started</Button>
-                <Button variant="outline">Learn More</Button>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+        <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-12">
               Key Features
@@ -78,7 +60,18 @@ export default function ElevateLandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32">
+        <section id="pricing" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-12">
+              Affordable Pricing
+            </h2>
+            <p className="text-center text-gray-500 dark:text-gray-400">
+              Choose a plan that fits your institution's needs.
+            </p>
+            {/* Add pricing details here */}
+          </div>
+        </section>
+        <section id="about" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="grid items-center gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
               <Image
@@ -89,95 +82,29 @@ export default function ElevateLandingPage() {
                 width="550"
               />
               <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                    Streamline Your Educational Processes
-                  </h2>
-                  <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                    Elevate provides a unified platform to manage all aspects of your educational institution. From
-                    student enrollment to grade management, we've got you covered.
-                  </p>
-                </div>
-                <ul className="grid gap-2 py-4">
-                  <li className="flex items-center gap-2">
-                    <svg
-                      className=" text-green-500 h-5 w-5"
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    <span className="font-medium">Centralized Data Management</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg
-                      className=" text-green-500 h-5 w-5"
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    <span className="font-medium">Automated Workflows</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg
-                      className=" text-green-500 h-5 w-5"
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    <span className="font-medium">Real-time Collaboration</span>
-                  </li>
-                </ul>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  About Elevate
+                </h2>
+                <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                  Elevate provides a unified platform to manage all aspects of your educational institution.
+                </p>
               </div>
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                  Ready to transform your educational institution?
-                </h2>
-                <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                  Join thousands of schools and universities already using Elevate to streamline their operations.
-                </p>
-              </div>
-              <div className="w-full max-w-sm space-y-2">
-                <form className="flex space-x-2">
-                  <Input className="max-w-lg flex-1" placeholder="Enter your email" type="email" />
-                  <Button type="submit">Subscribe</Button>
-                </form>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Sign up to get notified when we launch.
-                  <Link className="underline underline-offset-2" href="#">
-                    Terms & Conditions
-                  </Link>
-                </p>
-              </div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                Contact Us
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400">
+                We'd love to hear from you! Reach out to us for more details.
+              </p>
+              <form className="w-full max-w-sm space-y-2">
+                <Input className="max-w-lg flex-1" placeholder="Your Email" type="email" />
+                <Button type="submit">Send</Button>
+              </form>
             </div>
           </div>
         </section>
@@ -185,10 +112,10 @@ export default function ElevateLandingPage() {
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-gray-500 dark:text-gray-400">© 2024 Elevate Inc. All rights reserved.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-xs hover:underline underline-offset-4" href="#">
+          <Link className="text-xs hover:underline underline-offset-4" href="#terms">
             Terms of Service
           </Link>
-          <Link className="text-xs hover:underline underline-offset-4" href="#">
+          <Link className="text-xs hover:underline underline-offset-4" href="#privacy">
             Privacy
           </Link>
         </nav>
