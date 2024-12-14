@@ -180,7 +180,7 @@ export function Navbar({
                     <Button variant="ghost" className="w-full justify-start">
                       <Avatar className="h-8 w-8 mr-2">
                         <AvatarImage
-                          src="/placeholder.svg?height=32&width=32"
+                          // src="/placeholder.svg?height=32&width=32"
                           alt={user.name}
                         />
                         <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
