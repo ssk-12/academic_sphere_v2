@@ -109,7 +109,7 @@ export function Navbar({
             >
               <GraduationCap className="h-9 w-7" />
               {!isCollapsed && (
-                <span className="font-extrabold">Academic Sphere</span>
+                <span className="font-extrabold">Elevate</span>
               )}
             </div>
             <Separator />
