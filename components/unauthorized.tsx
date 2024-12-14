@@ -1,105 +1,78 @@
 'use client'
 
-import { useEffect } from 'react'
-import { motion } from 'framer-motion'
-import Image from 'next/image'
-import { CloudIcon } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Loader2, XCircle, AlertTriangle } from 'lucide-react'
 
 export default function Unauthorized() {
+  const [loading, setLoading] = useState(true)
+  const [showMessage, setShowMessage] = useState(false)
+
   useEffect(() => {
-    // This effect will run on the client-side
-    document.body.style.backgroundColor = '#1a1a1a'
-    return () => {
-      document.body.style.backgroundColor = ''
-    }
+    const timer = setTimeout(() => {
+      setLoading(false)
+      setShowMessage(true)
+    }, 500)
+
+    return () => clearTimeout(timer)
   }, [])
 
-  const containerVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.5,
-        delay: 0.2,
-        ease: "easeOut"
-      }
-    }
-  }
+  const messages = [
+    "Oops! You've wandered into restricted territory.",
+    "This page is playing hide and seek, and you're not 'it'!",
+    "Error 403: Your digital passport has been denied.",
+    "The resource you're looking for might be on vacation.",
+    "This content is for VIPs only (Very Important Pixels).",
+  ]
 
-  const cloudVariants = {
-    hidden: { y: -20, opacity: 0 },
-    visible: y => ({
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        delay: y * 0.2,
-        ease: "easeOut"
-      }
-    })
-  }
-
-  const textVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        delay: 0.7,
-        ease: "easeOut"
-      }
-    }
-  }
+  const randomMessage = messages[Math.floor(Math.random() * messages.length)]
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-      <motion.div
-        className="text-center"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <div className="flex justify-center mb-8">
-          {[0, 1, 2].map((index) => (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-500 to-pink-500 p-4">
+      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full">
+        <AnimatePresence mode="wait">
+          {loading ? (
             <motion.div
-              key={index}
-              custom={index}
-              variants={cloudVariants}
-              initial="hidden"
-              animate="visible"
-              className="mx-2"
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col items-center"
             >
-              <CloudIcon className="w-12 h-12 text-blue-300" />
+              <Loader2 className="w-16 h-16 text-purple-500 animate-spin" />
+              <p className="mt-4 text-lg font-semibold text-gray-700">Checking access...</p>
             </motion.div>
-          ))}
-        </div>
-        <motion.h1
-          className="text-4xl font-bold mb-4"
-          variants={textVariants}
-        >
-          Oh oh! Unauthorized Access
-        </motion.h1>
-        <motion.p
-          className="text-xl mb-8"
-          variants={textVariants}
-        >
-          It seems like you don't have permission to access this page.
-        </motion.p>
-        <motion.div 
-          variants={textVariants}
-          className="w-64 h-64 mx-auto"
-        >
-          <Image
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4soDrffrPhoY84JyV38uJ6drdtmVsFOHfoQ&s?height=256&width=256"
-            alt="Cannot access"
-            width={256}
-            height={256}
-            className="rounded-lg"
-          />
-        </motion.div>
-      </motion.div>
+          ) : (
+            <motion.div
+              key="message"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-center"
+            >
+              <XCircle className="w-20 h-20 text-red-500 mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-gray-800 mb-4">Access Denied</h1>
+              <p className="text-lg text-gray-600 mb-6">{randomMessage}</p>
+              <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-6">
+                <div className="flex items-center">
+                  <AlertTriangle className="w-6 h-6 text-yellow-500 mr-2" />
+                  <p className="text-sm text-yellow-700">
+                    The page or resource you're looking for might not be available.
+                  </p>
+                </div>
+              </div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1"
+                onClick={() => window.history.back()}
+              >
+                Go Back
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }

@@ -1,8 +1,10 @@
 import { Suspense } from 'react'
-import { getClass } from '@/actions/class'
+import { getClass, getClassWithAccessCheck } from '@/actions/class'
 import { ClassOverview } from './components/class-overview'
 import { ClassEvents } from './components/class-events'
 import { Skeleton } from '@/components/ui/skeleton'
+import { redirect } from 'next/navigation'
+import { getSession } from '@/lib/getSession'
 
 export default async function ClassPage({
   params,
@@ -10,27 +12,43 @@ export default async function ClassPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params;
+  const session = await getSession();
+  const userId = session?.user.id as string;
+  const accessCheck = await getClassWithAccessCheck(id, userId);
+if (!accessCheck.hasAccess) {
+  redirect(accessCheck.redirectUrl);
+}
 
   return (
     <div className="container mx-auto px-3">
       <Suspense fallback={<ClassOverviewSkeleton />}>
-        <ClassOverviewWrapper id={id} />
+        <ClassOverviewWrapper id={id} classData={accessCheck.classData} />
       </Suspense>
       <Suspense fallback={<ClassEventsSkeleton />}>
-        <ClassEventsWrapper id={id} />
+        <ClassEventsWrapper id={id} events={accessCheck?.classData?.events || []} />
       </Suspense>
     </div>
   )
 }
 
-async function ClassOverviewWrapper({ id }: { id: string }) {
-  const classData = await getClass(id);
+async function ClassOverviewWrapper({ id, classData }: { id: string , classData: any}) {
+//   const session = await getSession();
+//   const userId = session?.user.id as string;
+//   const accessCheck = await getClassWithAccessCheck(id, userId);
+// if (!accessCheck.hasAccess) {
+//   redirect(accessCheck.redirectUrl);
+// }
   return <ClassOverview classData={classData} />;
 }
 
-async function ClassEventsWrapper({ id }: { id: string }) {
-  const classData = await getClass(id);
-  return <ClassEvents id={id} events={classData?.events || []} />;
+async function ClassEventsWrapper({ id, events }: { id: string, events: any }) {
+  const session = await getSession();
+  const userId = session?.user.id as string;
+  const accessCheck = await getClassWithAccessCheck(id, userId);
+if (!accessCheck.hasAccess) {
+  redirect(accessCheck.redirectUrl);
+}
+  return <ClassEvents id={id} events={events || []} />;
 }
 
 function ClassEventsSkeleton() {

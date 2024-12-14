@@ -1,20 +1,25 @@
 import { Suspense } from "react"
-import { getEvent } from "@/actions/class"
+import { getEvent, getEventWithAccessCheck } from "@/actions/class"
 import { EventDetails } from "./components/EventDetails"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { getSession } from "@/lib/getSession"
+import { redirect } from "next/navigation"
 
 
 
 export default async function Event({
   params,
 }: {
-  params: Promise<{ eventId: string }>
+  params: Promise<{ eventId: string, id: string }>
 }) {
-  const { eventId } = await params;
+  const { eventId, id } = await params;
   const session = await getSession();
   const userId = session?.user.id as string;
+  const accessCheck = await getEventWithAccessCheck(id, eventId, userId);
+  if (!accessCheck.hasAccess) {
+    redirect(accessCheck.redirectUrl);
+  }
   return (
     <div className="container mx-auto py-2">
       <Suspense fallback={<EventSkeleton />}>

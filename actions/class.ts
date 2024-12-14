@@ -67,14 +67,11 @@ export async function enrollClass(state: { message: string; success: boolean, us
 export async function getClassWithAccessCheck(classId: string, userId: string) {
   const classData = await prisma.class.findUnique({
     where: {
-      id: classId,
+      id:classId,
     },
     include: {
-      students: {
-        select: {
-          id: true,
-        },
-      },
+      students: true,
+      events: true,
       createdBy: {
         select: {
           id: true,
@@ -85,19 +82,19 @@ export async function getClassWithAccessCheck(classId: string, userId: string) {
   });
 
   if (!classData) {
-    throw new Error("Class not found");
+    return { hasAccess: false, redirectUrl: '/unauthorized' };
   }
 
-  // Check if the user is in the class or is the creator
   const isStudent = classData.students.some((student) => student.id === userId);
-  const isCreator = classData.createdBy?.id === userId;
+  const isCreator = classData.createdBy.id === userId;
 
   if (!isStudent && !isCreator) {
-    throw new Error("Access denied");
+    return { hasAccess: false, redirectUrl: '/unauthorized' };
   }
 
-  return classData;
+  return { hasAccess: true, classData };
 }
+
 
 export async function getClasses() {
   const session = await auth()
@@ -372,12 +369,12 @@ export async function getEventWithAccessCheck(classId: string, eventId: string, 
   });
 
   if (!event) {
-    throw new Error('Event not found');
+    return { hasAccess: false, redirectUrl: '/unauthorized' };
   }
 
   if (event.classId !== classId) {
-    throw new Error('Event does not belong to the class');
+    return { hasAccess: false, redirectUrl: '/unauthorized' };
   }
 
-  return event; // Return the event if the user has access
+  return { hasAccess: true, redirectUrl: null };; // Return the event if the user has access
 }
