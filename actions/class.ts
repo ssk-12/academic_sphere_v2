@@ -378,3 +378,123 @@ export async function getEventWithAccessCheck(classId: string, eventId: string, 
 
   return { hasAccess: true, redirectUrl: null };; // Return the event if the user has access
 }
+
+export async function getAttendanceAnalytics(classId?: string, eventId?: string) {
+  const session = await auth();
+  const userId = session?.user.id as string;
+
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
+
+  // Base query filter to ensure access is limited to relevant classes/events
+  const baseFilter = {
+    OR: [
+      {
+        createdById: userId, // Classes/events created by the user
+      },
+      {
+        students: {
+          some: {
+            id: userId, // Classes the user is enrolled in
+          },
+        },
+      },
+    ],
+  };
+
+  // If classId is provided, focus analytics on that specific class
+  if (classId) {
+    const classAnalytics = await prisma.class.findUnique({
+      where: { id: classId },
+      include: {
+        events: {
+          include: {
+            attendances: true,
+          },
+        },
+        students: true,
+      },
+    });
+
+    if (!classAnalytics || (classAnalytics.createdById !== userId && !classAnalytics.students.some(student => student.id === userId))) {
+      throw new Error("Unauthorized access or class not found.");
+    }
+
+    const eventAttendanceStats = classAnalytics.events.map(event => {
+      const totalStudents = classAnalytics.students.length;
+      const attended = event.attendances.filter(att => att.present).length;
+      const attendancePercentage = totalStudents > 0 ? (attended / totalStudents) * 100 : 0;
+      return {
+        eventId: event.id,
+        eventName: event.name,
+        attendancePercentage,
+      };
+    });
+
+    return { classId, className: classAnalytics.name, eventAttendanceStats };
+  }
+
+  // If eventId is provided, focus analytics on that specific event
+  if (eventId) {
+    const eventAnalytics = await prisma.event.findUnique({
+      where: { id: eventId },
+      include: {
+        class: {
+          include: {
+            students: true,
+          },
+        },
+        attendances: true,
+      },
+    });
+
+    if (!eventAnalytics || (eventAnalytics.class.createdById !== userId && !eventAnalytics.class.students.some(student => student.id === userId))) {
+      throw new Error("Unauthorized access or event not found.");
+    }
+
+    const totalStudents = eventAnalytics.class.students.length;
+    const attended = eventAnalytics.attendances.filter(att => att.present).length;
+    const attendancePercentage = totalStudents > 0 ? (attended / totalStudents) * 100 : 0;
+
+    return {
+      eventId,
+      eventName: eventAnalytics.name,
+      attendancePercentage,
+    };
+  }
+
+  // General analytics for all classes the user is related to
+  const classes = await prisma.class.findMany({
+    where: baseFilter,
+    include: {
+      events: {
+        include: {
+          attendances: true,
+        },
+      },
+      students: true,
+    },
+  });
+
+  const classAnalytics = classes.map(cls => {
+    const eventAttendanceStats = cls.events.map(event => {
+      const totalStudents = cls.students.length;
+      const attended = event.attendances.filter(att => att.present).length;
+      const attendancePercentage = totalStudents > 0 ? (attended / totalStudents) * 100 : 0;
+      return {
+        eventId: event.id,
+        eventName: event.name,
+        attendancePercentage,
+      };
+    });
+
+    return {
+      classId: cls.id,
+      className: cls.name,
+      eventAttendanceStats,
+    };
+  });
+
+  return classAnalytics;
+}
