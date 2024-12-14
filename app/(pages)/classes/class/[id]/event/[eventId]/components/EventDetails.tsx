@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MarkAttendanceForm } from "./mark-attendance-form";
 
+
 interface Student {
   id: string;
   fullName: string;
@@ -42,6 +43,7 @@ interface EventDetailsProps {
       };
     };
     attendances: Attendance[];
+    userId: string;
   };
 }
 
@@ -59,8 +61,9 @@ const attendanceColumns: ColumnDef<Attendance>[] = [
   },
 ];
 
-export function EventDetails({ event }: EventDetailsProps) {
+export  function EventDetails({ event }: EventDetailsProps) {
   const [searchTerm, setSearchTerm] = useState("");
+
 
   const filteredAttendances = event.attendances.filter((attendance) =>
     attendance.student.fullName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -73,7 +76,6 @@ export function EventDetails({ event }: EventDetailsProps) {
   return (
     <div>
       <div className="max-w-7xl mx-auto space-y-4">
-        
         <Card className="bg-white/10 bg-gradient-to-b from-black to-gray-900 backdrop-blur-md dark:bg-gray-800/50 border-white/10 shadow-2xl">
           <CardHeader className="space-y-2">
             <CardTitle className="text-4xl font-bold bg-gradient-to-r from-white via-gray-400 to-gray-900 dark:from-white dark:via-gray-600 dark:to-gray-100 bg-clip-text text-transparent shadow-lg">
@@ -152,17 +154,29 @@ export function EventDetails({ event }: EventDetailsProps) {
                     )}
                   </div>
                 </div>
-                <MarkAttendanceForm
-                  id={event.id}
-                  evlocationLng={event.locationLng}
-                  evlocationLat={event.locationLat}
-                />
+                {event.class.createdBy.id !== event.userId && (
+                  event.attendances.some(
+                    (attendance) => attendance.student.id === event.userId
+                  ) ? (
+                    <Badge
+                      variant="default"
+                      className="w-fit text-white bg-white/20 hover:text-black transition-colors"
+                    >
+                      You've marked your attendance
+                    </Badge>
+                  ) : (
+                    <MarkAttendanceForm
+                    id={event.id}
+                    evlocationLng={event.locationLng}
+                    evlocationLat={event.locationLat}
+                  />
+                  )
+                )}
               </section>
             )}
           </CardContent>
         </Card>
 
-        
         <Card className="bg-white/10 bg-gradient-to-b from-black to-gray-900 backdrop-blur-md dark:bg-gray-800/50 border-white/10 shadow-2xl">
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-white bg-gradient-to-r from-gray-500 to-gray-300 bg-clip-text text-transparent">

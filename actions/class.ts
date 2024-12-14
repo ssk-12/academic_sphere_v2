@@ -64,6 +64,41 @@ export async function enrollClass(state: { message: string; success: boolean, us
   }
 }
 
+export async function getClassWithAccessCheck(classId: string, userId: string) {
+  const classData = await prisma.class.findUnique({
+    where: {
+      id: classId,
+    },
+    include: {
+      students: {
+        select: {
+          id: true,
+        },
+      },
+      createdBy: {
+        select: {
+          id: true,
+          fullName: true,
+        },
+      },
+    },
+  });
+
+  if (!classData) {
+    throw new Error("Class not found");
+  }
+
+  // Check if the user is in the class or is the creator
+  const isStudent = classData.students.some((student) => student.id === userId);
+  const isCreator = classData.createdBy?.id === userId;
+
+  if (!isStudent && !isCreator) {
+    throw new Error("Access denied");
+  }
+
+  return classData;
+}
+
 export async function getClasses() {
   const session = await auth()
   const createdById = session?.user.id as string
@@ -164,9 +199,7 @@ export async function createEvent(state: { message: string; success: boolean, lo
       
     });
 
-    revalidatePath('/class')
-
-    // console.dir(formData, {depth: null});
+    revalidatePath('/class/[id]', 'page');
     return { message: 'Event created successfully', success: true };
   } catch (error) {
     if (error instanceof Error) {
@@ -177,10 +210,11 @@ export async function createEvent(state: { message: string; success: boolean, lo
   }
 }
 
-
 export async function getEvent(id: string) {
   const session = await auth();
   const userId = session?.user.id as string;
+  const todayDate = new Date().toISOString().split('T')[0]; // Extracts YYYY-MM-DD
+
   const createdById = await prisma.event.findUnique({
     where: {
       id,
@@ -191,11 +225,10 @@ export async function getEvent(id: string) {
           createdById: true,
         },
       },
-    }
+    },
   });
-  // console.log('createdById', createdById);
-  // console.log('userId', userId);
-  if(createdById?.class.createdById !== userId){
+
+  if (createdById?.class.createdById !== userId) {
     return prisma.event.findUnique({
       where: {
         id,
@@ -203,21 +236,26 @@ export async function getEvent(id: string) {
       include: {
         class: {
           include: {
-            students: true, 
-            createdBy: true, 
+            students: true,
+            createdBy: true,
           },
         },
         attendances: {
           include: {
             student: true,
           },
-          where:{
-            studentId: userId
-          }
+          where: {
+            studentId: userId,
+            checkedAt: {
+              gte: new Date(todayDate), // Matches from the start of today
+              lt: new Date(new Date(todayDate).getTime() + 86400000), // Matches before tomorrow
+            },
+          },
         },
       },
     });
   }
+
   return prisma.event.findUnique({
     where: {
       id,
@@ -225,18 +263,25 @@ export async function getEvent(id: string) {
     include: {
       class: {
         include: {
-          students: true, 
-          createdBy: true, 
+          students: true,
+          createdBy: true,
         },
       },
       attendances: {
         include: {
           student: true,
         },
+        where: {
+          checkedAt: {
+            gte: new Date(todayDate), // Matches from the start of today
+            lt: new Date(new Date(todayDate).getTime() + 86400000), // Matches before tomorrow
+          },
+        },
       },
     },
   });
 }
+
 
 export async function markAttendance(
   state: { message: string; success: boolean },
@@ -302,7 +347,7 @@ export async function markAttendance(
       },
     });
 
-    
+    revalidatePath('classes/class/[id]/event/[eventId]', 'page');
 
     return { message: 'Attendance marked successfully', success: true };
   } catch (error) {
@@ -312,4 +357,27 @@ export async function markAttendance(
       return { message: 'An unknown error occurred', success: false };
     }
   }
+}
+
+export async function getEventWithAccessCheck(classId: string, eventId: string, userId: string) {
+  // First, check if the user has access to the class
+  await getClassWithAccessCheck(classId, userId);
+
+  // Now check if the event belongs to the class
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+    include: {
+      class: true, // Including class information to check the relationship
+    },
+  });
+
+  if (!event) {
+    throw new Error('Event not found');
+  }
+
+  if (event.classId !== classId) {
+    throw new Error('Event does not belong to the class');
+  }
+
+  return event; // Return the event if the user has access
 }

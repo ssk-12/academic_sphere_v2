@@ -3,6 +3,7 @@ import { getEvent } from "@/actions/class"
 import { EventDetails } from "./components/EventDetails"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { getSession } from "@/lib/getSession"
 
 
 
@@ -12,24 +13,27 @@ export default async function Event({
   params: Promise<{ eventId: string }>
 }) {
   const { eventId } = await params;
+  const session = await getSession();
+  const userId = session?.user.id as string;
   return (
     <div className="container mx-auto py-2">
       <Suspense fallback={<EventSkeleton />}>
-        <EventContent id={eventId} />
+        <EventContent id={eventId} userId={userId} />
       </Suspense>
     </div>
   )
 }
 
-async function EventContent({ id }: { id: string }) {
+async function EventContent({ id, userId }: { id: string, userId: string }) {
   let event = await getEvent(id)
-  // console.dir(event, {depth: null});
+  console.dir(event, {depth: null});
   if (!event) {
     return <div className="text-center text-xl font-semibold">Event not found</div>
   }
 
   const mappedEvent = {
     ...event,
+    userId,
     class: {
       ...event.class,
       createdBy: {
@@ -44,7 +48,7 @@ async function EventContent({ id }: { id: string }) {
   if (!event) {
     return <div className="text-center text-xl font-semibold">Event not found</div>
   }
-  return <EventDetails event={mappedEvent} />
+  return <EventDetails event={mappedEvent}  />
 }
 
 function EventSkeleton() {
