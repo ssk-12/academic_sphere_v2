@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
-import { CreateClassForm } from './create-class-form'
-import { EnrollClassForm } from './enroll-class-form'
-import { ClassCard } from './class-card'
+import { CreateClassForm } from '@/components/class/create-class-form'
+import { EnrollClassForm } from '@/components/class/enroll-class-form'
+import { ClassCard } from '@/components/class/class-card'
 import { getClasses } from '@/actions/class'
 import { Skeleton } from "@/components/ui/skeleton"
 

@@ -1,7 +1,6 @@
 import { Suspense } from "react"
 import { getEvent, getEventWithAccessCheck } from "@/actions/class"
-import { EventDetails } from "./components/EventDetails"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { EventDetails } from "@/components/events/EventDetails"
 import { Skeleton } from "@/components/ui/skeleton"
 import { getSession } from "@/lib/getSession"
 import { redirect } from "next/navigation"

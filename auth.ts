@@ -40,28 +40,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         const email = credentials?.email as string;
         const password = credentials?.password as string;
-
+      
         if (!email || !password) {
-          throw new Error("Please provide both email & password");
+          return null;
         }
-
-        const user = await prisma.user.findUnique({
-          where: { email }
-        });
-        console.log("user", email, password)
-
-        console.log(user)
-
+      
+        const user = await prisma.user.findUnique({ where: { email } });
+      
         if (!user || !user.password) {
-          throw new Error("Invalid email or password");
+          return null;
         }
-
-        const isMatched = await compare(password as string, user.password as string);
-
+      
+        const isMatched = await compare(password, user.password);
+      
         if (!isMatched) {
-          throw new Error("Password did not match");
+          return null;
         }
-
+      
         const userData = {
           name: user.fullName,
           email: user.email,
@@ -71,6 +66,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         return userData;
       },
+      
     }),
   ],
 
@@ -80,12 +76,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async session({ session, token }) {
+      // Check if the user is authenticated
       if (token?.sub && token?.role) {
+        // Assign user details to the session object
         session.user.id = token.sub;
         session.user.role = token.role as string;
-        session.user.name = token.name as string; // Corrected key
+        session.user.name = token.name as string;
+        return session;
+      } else {
+        // If no user is authenticated, return null
+        return null;
       }
-      return session;
     },
     
 
@@ -126,6 +127,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       if (account?.provider === "credentials") {
+        if (!user) {
+          return false;
+        }
         return true;
       } else {
         return false;

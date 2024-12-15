@@ -11,48 +11,71 @@ export const signout = async () => {
   await signOut()
 };
 
-const login = async (formData: FormData) => {
+const login = async (state: { message: string; success: boolean},formData: FormData) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  console.log(email, password)
+  console.log("Attempting login with:", email, password);
 
-  await signIn("credentials", {
-    redirect: false,
-    callbackUrl: "/",
-    email,
-    password,
-  });
-  redirect("/");
+  try {
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    console.log("Login response:", res);
+
+    if (!res) {
+      console.error("Login failed:", res?.error || "Unexpected error");
+      return { success: false, message: res?.error || "Login failed" };
+    }
+
+    console.log("Login successful:", res);
+    return { success: true, message: "Login successful" };
+  } catch (error) {
+    console.error("An error occurred during login:", error);
+    return { success: false, message: "An unexpected error occurred. Please try again." };
+  }
 };
 
-const register = async (formData: FormData) => {
-  const fullName = formData.get("fullname") as string;
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
 
-  if (!fullName  || !email || !password) {
-    throw new Error("Please fill all fields");
+
+const register = async (state: { message: string; success: boolean},formData: FormData) => {
+  const fullName = formData.get('fullName') as string;
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+
+  if (!fullName || !email || !password) {
+    return { success: false, message: 'Please fill all fields' };
   }
 
-  // Check for existing user
-  const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser) throw new Error("User already exists");
+  try {
+    // Check for existing user
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return { success: false, message: 'User already exists' };
+    }
 
-  const hashedPassword = await hash(password, 12);
+    // Hash the password
+    const hashedPassword = await hash(password, 12);
 
-  // Create new user
-  await prisma.user.create({
-    data: {
-      fullName,
-      email,
-      password: hashedPassword,
-      role: "USER",
-    },
-  });
+    // Create new user
+    await prisma.user.create({
+      data: {
+        fullName,
+        email,
+        password: hashedPassword,
+        role: 'USER',
+      },
+    });
 
-  console.log(`User created successfully 🥂`);
-  redirect("/login");
+    console.log('User created successfully 🥂');
+    return { success: true, message: 'User registered successfully' };
+  } catch (error) {
+    console.error('An error occurred during registration:', error);
+    return { success: false, message: 'An unexpected error occurred. Please try again.' };
+  }
 };
 
 const fetchAllUsers = async () => {

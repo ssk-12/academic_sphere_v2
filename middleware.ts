@@ -8,6 +8,10 @@ export async function middleware(request: NextRequest) {
   const session = await getSession();
   const user = session?.user;
 
+  console.log('Session:', session);
+  console.log("User:", user);
+  console.log("Pathname:", pathname);
+
 
   // Redirect authenticated users away from the login page
   if (session && pathname === '/login') {
@@ -15,7 +19,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Redirect unauthenticated users trying to access protected routes
-  if (!session && pathname !== '/login' && pathname !== '/' && pathname !== '/register') {
+  if (!session && !user && pathname !== '/login' && pathname !== '/' && pathname !== '/register') {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
