@@ -6,12 +6,10 @@ import { Loader2, XCircle, AlertTriangle } from 'lucide-react'
 
 export default function Unauthorized() {
   const [loading, setLoading] = useState(true)
-  const [showMessage, setShowMessage] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false)
-      setShowMessage(true)
     }, 500)
 
     return () => clearTimeout(timer)
