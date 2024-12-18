@@ -18,9 +18,9 @@ export default async function RootLayout({
  
 
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full w-full">
       <body
-        className={` h-full`}
+        className={` h-full w-full`}
       >
 
           {children}
