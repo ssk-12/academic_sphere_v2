@@ -1,4 +1,3 @@
-// middleware.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getSession } from './lib/getSession';
@@ -8,9 +7,9 @@ export async function middleware(request: NextRequest) {
   const session = await getSession();
   const user = session?.user;
 
-  console.log('Session:', session);
-  console.log("User:", user);
-  console.log("Pathname:", pathname);
+  // console.log('Session:', session);
+  // console.log("User:", user);
+  // console.log("Pathname:", pathname);
 
 
   // Redirect authenticated users away from the login page
