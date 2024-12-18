@@ -20,20 +20,12 @@ export default async function RootLayout({
   const session = await getSession();
   const user = session?.user;
 
-  const cookieStore = await cookies();
-  const layout = cookieStore.get("react-resizable-panels:layout");
-  const collapsed = cookieStore.get("react-resizable-panels:collapsed");
-
-  const defaultLayout = layout ? JSON.parse(layout.value) : undefined;
-  const defaultCollapsed = collapsed ? JSON.parse(collapsed.value) : undefined;
-
-  console.log(defaultLayout, defaultCollapsed);
 
   return (
     <div className="h-full">
       <Navbar
-    defaultCollapsed={defaultCollapsed}
-    defaultLayout={defaultLayout}
+    defaultCollapsed={true}
+    defaultLayout={[4, 96]}
     navCollapsedSize={4}
     user={
       user && user.name && user.email

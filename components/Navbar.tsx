@@ -80,17 +80,17 @@ export function Navbar({
           onCollapse={() => {
             setIsCollapsed(true);
            
-            document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
-              true
-            )}`;
+            // document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+            //   true
+            // )}`;
             
           }}
           onExpand={() => {
             setIsCollapsed(false);
             
-            document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
-              false
-            )}`;
+            // document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+            //   false
+            // )}`;
           }}
           className={cn(
             "flex flex-col",
