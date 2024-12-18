@@ -122,6 +122,20 @@ export async function getClasses() {
 
 export async function deleteClass(id: string) {
   try {
+
+    await prisma.attendance.deleteMany({
+      where: {
+        event: {
+        classId: id,
+        }
+      },
+    })
+    await prisma.event.deleteMany({
+      where: {
+        classId: id,
+      }
+    })
+
     await prisma.class.delete({
       where: {
         id,
@@ -139,7 +153,34 @@ export async function deleteClass(id: string) {
   }
 }
 
-
+export async function deleteEvent(id: string, createdById: string) {
+  const session = await auth()
+  const userId = session?.user.id as string
+  if (userId !== createdById) {
+    return { message: 'Unauthorized access', success: false }
+  }
+  try {
+    await prisma.attendance.deleteMany({
+      where: {
+        eventId: id,
+      },
+    })
+    await prisma.event.delete({
+      where: {
+        id,
+      },
+    })
+    revalidatePath('/event')
+    return { message: 'Event deleted successfully', success: true }
+  }
+  catch (error) {
+    if (error instanceof Error) {
+      return { message: error.message, success: false }
+    } else {
+      return { message: 'An unknown error occurred', success: false }
+    }
+  }
+}
 export async function getClass(id: string) {
   return prisma.class.findUnique({
     where: {

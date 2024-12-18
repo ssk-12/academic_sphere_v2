@@ -30,7 +30,7 @@ export default async function Event({
 
 async function EventContent({ id, userId }: { id: string, userId: string }) {
   let event = await getEvent(id)
-  console.dir(event, {depth: null});
+  // console.dir(event, {depth: null});
   if (!event) {
     return <div className="text-center text-xl font-semibold">Event not found</div>
   }

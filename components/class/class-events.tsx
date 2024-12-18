@@ -12,6 +12,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { deleteEvent } from '@/actions/class'
+import { toast } from '@/hooks/use-toast'
 
 type Event = {
   name: string
@@ -26,7 +28,7 @@ type Event = {
   formattedDate?: string
 }
 
-export function ClassEvents({ events, id }: { events: Event[], id: string }) {
+export function ClassEvents({ events, id, creatorId }: { events: Event[], id: string, creatorId: string }) {
   const [formattedEvents, setFormattedEvents] = useState<Event[]>([])
   const router = useRouter()
 
@@ -45,12 +47,22 @@ export function ClassEvents({ events, id }: { events: Event[], id: string }) {
     setFormattedEvents(formatted)
   }, [events])
 
-  const handleEdit = (eventId: string) => {
+  const handleEdit = async(eventId: string) => {
     alert(`Edit event ${eventId}`)
   }
 
-  const handleDelete = (eventId: string) => {
-    alert(`Delete event ${eventId}`)
+  const handleDelete = async(eventId: string) => {
+    try{
+      const res = await deleteEvent(eventId, creatorId)
+      if(res.success){
+        toast({title:'Event deleted successfully', description:res.message, variant: 'default'})
+      }else{
+        toast({title:'Error deleting event', description:res.message, variant: 'destructive'})
+      }}
+    catch(e){
+      console.error(e)
+      toast({title:'Error deleting event', description:e.message, variant: 'destructive'})
+    }
   }
 
   const handleEventClick = (eventId: string) => {
@@ -102,12 +114,15 @@ export function ClassEvents({ events, id }: { events: Event[], id: string }) {
                           <DropdownMenuItem onClick={() => handleEdit(event.id)}>
                             Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(event.id)}
+                            <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(event.id);
+                            }}
                             className="text-destructive"
-                          >
+                            >
                             Delete
-                          </DropdownMenuItem>
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>

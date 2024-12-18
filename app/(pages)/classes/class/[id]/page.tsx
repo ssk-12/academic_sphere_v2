@@ -25,7 +25,7 @@ if (!accessCheck.hasAccess) {
         <ClassOverviewWrapper id={id} classData={accessCheck.classData} />
       </Suspense>
       <Suspense fallback={<ClassEventsSkeleton />}>
-        <ClassEventsWrapper id={id} events={accessCheck?.classData?.events || []} />
+        <ClassEventsWrapper id={id} creatorId={accessCheck.classData.createdById} events={accessCheck?.classData?.events || []} />
       </Suspense>
     </div>
   )
@@ -41,14 +41,14 @@ async function ClassOverviewWrapper({ id, classData }: { id: string , classData:
   return <ClassOverview classData={classData} />;
 }
 
-async function ClassEventsWrapper({ id, events }: { id: string, events: any }) {
+async function ClassEventsWrapper({ id, events, creatorId }: { id: string, events: any, creatorId: string }) {
   const session = await getSession();
   const userId = session?.user.id as string;
   const accessCheck = await getClassWithAccessCheck(id, userId);
 if (!accessCheck.hasAccess) {
   redirect(accessCheck.redirectUrl);
 }
-  return <ClassEvents id={id} events={events || []} />;
+  return <ClassEvents id={id} creatorId={creatorId} events={events || []} />;
 }
 
 function ClassEventsSkeleton() {

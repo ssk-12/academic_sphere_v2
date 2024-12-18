@@ -143,7 +143,7 @@ const AttendanceDashboard: React.FC = () => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Attendance Dashboard</CardTitle>
+        <CardTitle>Attendance Analytics</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="mb-6 space-y-4">
