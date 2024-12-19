@@ -2,21 +2,13 @@
 
 import React, { useState, useEffect } from "react"
 import { getAttendanceAnalytics, getClasses, getEvents } from "@/actions/analytics"
-import { Button } from "@/components/ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { Skeleton } from "@/components/ui/skeleton"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { Select, Space, Button } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 
 type AnalyticsItem = {
   classId: string
@@ -112,25 +104,16 @@ const AttendanceDashboard: React.FC = () => {
     }
   }
 
-  const handleClassSelection = (value: string) => {
-    setSelectedClassIds(prev => {
-      if (prev.includes(value)) {
-        return prev.filter(id => id !== value)
-      } else {
-        return [...prev, value]
-      }
-    })
-  }
+  const handleClearAllcls = (e: React.MouseEvent) => {
+      e.stopPropagation(); // Prevent dropdown from toggling
+      setSelectedClassIds([]);
+    };
 
-  const handleEventSelection = (value: string) => {
-    setSelectedEventIds(prev => {
-      if (prev.includes(value)) {
-        return prev.filter(id => id !== value)
-      } else {
-        return [...prev, value]
-      }
-    })
-  }
+    const handleClearAllev = (e: React.MouseEvent) => {
+      e.stopPropagation(); // Prevent dropdown from toggling
+      setSelectedEventIds([]);
+    };
+
 
   const chartData = analytics.flatMap((item) =>
     item.eventAttendanceStats.map((event) => ({
@@ -152,38 +135,28 @@ const AttendanceDashboard: React.FC = () => {
             {optionsLoading ? (
               <Skeleton className="h-10 w-full" />
             ) : (
-              <Select onValueChange={handleClassSelection}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select classes" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Classes</SelectLabel>
-                    {classes.map((cls) => (
-                      <SelectItem key={cls.id} value={cls.id}>
-                        {cls.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            )}
-            {selectedClassIds.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {selectedClassIds.map(id => {
-                  const cls = classes.find(c => c.id === id)
-                  return (
-                    <Button
-                      key={id}
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => handleClassSelection(id)}
-                    >
-                      {cls?.name} ✕
-                    </Button>
-                  )
-                })}
-              </div>
+              <Select
+                    mode="multiple"
+                    style={{ width: '100%' }}
+                    placeholder="Select classes"  
+                    value={selectedClassIds}
+                    onChange={(values) => setSelectedClassIds(values)}
+                    options={classes.map(cls => ({ label: cls.name, value: cls.id }))}
+                    filterOption={(input, option) =>
+                      option.label.toLowerCase().includes(input.toLowerCase())
+                    }
+                    suffixIcon={
+                      selectedClassIds.length > 0 && (
+                        <Button
+                          type="text"
+                          size="small"
+                          icon={<CloseOutlined />}
+                          onClick={handleClearAllcls}
+                          style={{ marginRight: -8 }}
+                        />
+                      )
+                    }
+                  />
             )}
           </div>
           <div>
@@ -191,39 +164,30 @@ const AttendanceDashboard: React.FC = () => {
             {optionsLoading ? (
               <Skeleton className="h-10 w-full" />
             ) : (
-              <Select onValueChange={handleEventSelection}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select events" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Events</SelectLabel>
-                    {events.map((event) => (
-                      <SelectItem key={event.id} value={event.id}>
-                        {event.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <Select
+                    mode="multiple"
+                    style={{ width: '100%' }}
+                    placeholder="Select events"  
+                    value={selectedEventIds}
+                    onChange={(values) => setSelectedEventIds(values)}
+                    options={events.map(ev => ({ label: ev.name, value: ev.id }))}
+                    filterOption={(input, option) =>
+                      option.label.toLowerCase().includes(input.toLowerCase())
+                    }
+                    suffixIcon={
+                      selectedClassIds.length > 0 && (
+                        <Button
+                          type="text"
+                          size="small"
+                          icon={<CloseOutlined />}
+                          onClick={handleClearAllev}
+                          style={{ marginRight: -8 }}
+                        />
+                      )
+                    }
+                  />
             )}
-            {selectedEventIds.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {selectedEventIds.map(id => {
-                  const event = events.find(e => e.id === id)
-                  return (
-                    <Button
-                      key={id}
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => handleEventSelection(id)}
-                    >
-                      {event?.name} ✕
-                    </Button>
-                  )
-                })}
-              </div>
-            )}
+            
           </div>
         </div>
 
