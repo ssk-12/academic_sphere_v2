@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import {  MapPin, Clock, MoreVertical } from 'lucide-react'
+import { MapPin, Clock, MoreVertical } from 'lucide-react'
 import { CreateEventForm } from './create-event-form'
 import {
   DropdownMenu,
@@ -36,9 +36,8 @@ export function ClassEvents({ events, id, creatorId }: { events: Event[], id: st
     const formatted = events.map(event => ({
       ...event,
       formattedDate: new Date(event.date).toLocaleString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
+        weekday: 'short',
+        month: 'short',
         day: 'numeric',
         hour: 'numeric',
         minute: 'numeric'
@@ -52,14 +51,14 @@ export function ClassEvents({ events, id, creatorId }: { events: Event[], id: st
   }
 
   const handleDelete = async(eventId: string) => {
-    try{
+    try {
       const res = await deleteEvent(eventId, creatorId)
-      if(res.success){
+      if(res.success) {
         toast({title:'Event deleted successfully', description:res.message, variant: 'default'})
-      }else{
+      } else {
         toast({title:'Error deleting event', description:res.message, variant: 'destructive'})
-      }}
-    catch(e){
+      }
+    } catch(e) {
       console.error(e)
       toast({title:'Error deleting event', description:e.message, variant: 'destructive'})
     }
@@ -77,60 +76,64 @@ export function ClassEvents({ events, id, creatorId }: { events: Event[], id: st
           <CreateEventForm id={id} />
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
-            {formattedEvents.length === 0 ? (
-              <p className="text-center text-muted-foreground py-4">No events scheduled yet.</p>
-            ) : (
-              formattedEvents.map((event) => (
+          {formattedEvents.length === 0 ? (
+            <p className="text-center text-muted-foreground py-4">No events scheduled yet.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {formattedEvents.map((event) => (
                 <Card
                   key={event.id}
-                  onClick={() => handleEventClick(event.id)}
-                  className="cursor-pointer hover:shadow-lg transition"
+                  className="cursor-pointer hover:shadow-lg transition flex flex-col h-full"
                 >
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div className="space-y-2">
-                        <h3 className="font-semibold text-lg">{event.name}</h3>
-                        <p className="text-sm text-muted-foreground">{event.description}</p>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center">
-                            <Clock className="mr-1 h-4 w-4" />
-                            {event.formattedDate}
-                          </div>
-                          {event.isLocationBased && (
-                            <div className="flex items-center">
-                              <MapPin className="mr-1 h-4 w-4" />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleEdit(event.id)}>
-                            Edit
-                          </DropdownMenuItem>
-                            <DropdownMenuItem
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDelete(event.id);
-                            }}
-                            className="text-destructive"
-                            >
-                            Delete
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg font-semibold truncate">{event.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-2">{event.description}</p>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4" />
+                      <span className="truncate">{event.formattedDate}</span>
                     </div>
+                    {event.isLocationBased && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                        <MapPin className="h-4 w-4" />
+                        <span>Location-based</span>
+                      </div>
+                    )}
                   </CardContent>
+                  <CardFooter className="flex justify-between items-center pt-2">
+                    <Button variant="outline" size="sm" onClick={() => handleEventClick(event.id)}>
+                      View Details
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={(e) => {
+                          e.stopPropagation();
+                          handleEdit(event.id);
+                        }}>
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(event.id);
+                          }}
+                          className="text-destructive"
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </CardFooter>
                 </Card>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
