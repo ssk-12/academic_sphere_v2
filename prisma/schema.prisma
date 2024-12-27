@@ -57,7 +57,11 @@ model Attendance {
   locationLat Float?
   locationLng Float?
   checkedAt   DateTime  @default(now())
+
+  @@unique([eventId, studentId, checkedAt]) // Composite unique constraint with date
 }
+
+
 
 enum Role {
   ADMIN
