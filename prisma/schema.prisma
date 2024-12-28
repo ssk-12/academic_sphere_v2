@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // or "mysql" or "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -18,39 +18,44 @@ model User {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   classesCreated  Class[]      @relation("CreatedClasses")
-  classesEnrolled Class[]      @relation("ClassStudents") // Back-relation
-  attendances     Attendance[] @relation("UserAttendances") // Back-relation
+  classesEnrolled Class[]      @relation("ClassStudents")
+  attendances     Attendance[] @relation("UserAttendances")
+  lmsCreated      LMS[]        @relation("CreatedLMS")     // New relation
 }
 
 model Class {
-  id         String       @id @default(cuid())
-  name       String
-  description String?
-  createdBy  User         @relation("CreatedClasses", fields: [createdById], references: [id])
-  createdById String
-  students   User[]       @relation("ClassStudents") // Back-relation
-  events     Event[]
-  createdAt  DateTime     @default(now())
-}
-
-model Event {
   id          String       @id @default(cuid())
   name        String
   description String?
-  date        DateTime     @default(now())
-  isLocationBased Boolean  @default(false)
-  locationLat Float?
-  locationLng Float?
-  proximity   Float?
-  class       Class        @relation(fields: [classId], references: [id])
-  classId     String
-  attendances Attendance[]
+  createdBy   User         @relation("CreatedClasses", fields: [createdById], references: [id])
+  createdById String
+  students    User[]       @relation("ClassStudents")
+  events      Event[]
+  lmsModules  ClassLMS[]   // Changed to use join table
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt  @default(now())
+}
+
+model Event {
+  id              String       @id @default(cuid())
+  name            String
+  description     String?
+  date            DateTime     @default(now())
+  isLocationBased Boolean      @default(false)
+  locationLat     Float?
+  locationLng     Float?
+  proximity       Float?
+  class           Class        @relation(fields: [classId], references: [id])
+  classId         String
+  attendances     Attendance[]
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt  @default(now())
 }
 
 model Attendance {
   id          String    @id @default(cuid())
   present     Boolean
-  student     User      @relation("UserAttendances", fields: [studentId], references: [id]) // Back-relation
+  student     User      @relation("UserAttendances", fields: [studentId], references: [id])
   studentId   String
   event       Event     @relation(fields: [eventId], references: [id])
   eventId     String
@@ -58,10 +63,60 @@ model Attendance {
   locationLng Float?
   checkedAt   DateTime  @default(now())
 
-  @@unique([eventId, studentId, checkedAt]) // Composite unique constraint with date
+  @@unique([eventId, studentId, checkedAt])
 }
 
+model LMS {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  isPublic    Boolean      @default(false)
+  createdBy   User         @relation("CreatedLMS", fields: [createdById], references: [id])
+  createdById String
+  classes     ClassLMS[]   // Changed to use join table
+  chapters    Chapter[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt  @default(now())
+}
 
+// New join table for many-to-many relationship between Class and LMS
+model ClassLMS {
+  id        String   @id @default(cuid())
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  classId   String
+  lms       LMS      @relation(fields: [lmsId], references: [id], onDelete: Cascade)
+  lmsId     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  @default(now())
+
+  @@unique([classId, lmsId])
+}
+
+model Chapter {
+  id          String       @id @default(cuid())
+  name        String
+  orderIndex  Int         @default(0)  // Added for chapter ordering
+  lms         LMS         @relation(fields: [lmsId], references: [id], onDelete: Cascade)
+  lmsId       String
+  contents    Content[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt  @default(now())
+
+  @@unique([lmsId, orderIndex])  // Ensure unique ordering within an LMS
+}
+
+model Content {
+  id          String    @id @default(cuid())
+  title       String
+  body        String    @db.Text  // Changed to Text for longer content
+  orderIndex  Int      @default(0)  // Added for content ordering
+  chapter     Chapter   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt  @default(now())
+
+  @@unique([chapterId, orderIndex])  // Ensure unique ordering within a chapter
+}
 
 enum Role {
   ADMIN
