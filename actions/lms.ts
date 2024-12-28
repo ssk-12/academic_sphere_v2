@@ -405,3 +405,62 @@ export async function deleteChapter(prevState: any, { chapterId }: { chapterId: 
     return { success: false, message: 'Failed to delete chapter' };
   }
 }
+
+export async function deleteContent(prevState: any, { contentId }: { contentId: string }) {
+  const session = await auth();
+  const user = session?.user;
+
+  if (!user) {
+    return { success: false, message: 'User not authenticated' };
+  }
+
+  try {
+    const content = await prisma.content.findUnique({
+      where: { id: contentId },
+      include: {
+        chapter: {
+          include: { lms: true }
+        }
+      }
+    });
+
+    if (!content || content.chapter.lms.createdById !== user.id) {
+      return { success: false, message: 'Not authorized to delete this content' };
+    }
+
+    // Get the content to be deleted and its orderIndex
+    const currentOrderIndex = content.orderIndex;
+    const chapterId = content.chapter.id;
+
+    // Find contents that need reordering
+    const contentsToUpdate = await prisma.content.findMany({
+      where: {
+        chapterId: chapterId,
+        orderIndex: {
+          gt: currentOrderIndex
+        }
+      }
+    });
+
+    // Use transaction to ensure both deletion and reordering succeed
+    await prisma.$transaction([
+      // Delete the content
+      prisma.content.delete({
+        where: { id: contentId }
+      }),
+
+      // Update orderIndex for remaining contents
+      ...contentsToUpdate.map(c => 
+        prisma.content.update({
+          where: { id: c.id },
+          data: { orderIndex: c.orderIndex - 1 }
+        })
+      )
+    ]);
+
+    return { success: true, message: 'Content deleted successfully' };
+  } catch (error) {
+    console.error('Failed to delete content:', error);
+    return { success: false, message: 'Failed to delete content' };
+  }
+}

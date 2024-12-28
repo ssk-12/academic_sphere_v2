@@ -6,8 +6,13 @@ import { notFound } from 'next/navigation'
 
 export const revalidate = 0
 
-export default async function LMSDetailsPage({ params }: { params: { id: string } }) {
-  const { lms, isCreator } = await fetchLMSDetails({ lmsId: params.id })
+export default async function LMSDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params;
+  const { lms, isCreator } = await fetchLMSDetails({ lmsId: id })
 
   if (!lms) {
     notFound()
