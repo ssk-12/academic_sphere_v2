@@ -21,7 +21,9 @@ export function UpdateContentForm({ content }: UpdateContentFormProps) {
   const initialState = { message: '', success: true }
   const [state, formAction, isPending] = useActionState(updateContent, initialState)
 
-  const handleSubmit = (formData: FormData) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
     formData.append('contentId', content.id)
     formAction(formData)
   }
