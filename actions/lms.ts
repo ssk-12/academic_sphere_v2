@@ -109,6 +109,8 @@ export async function deleteLMS(prevState: any, { lmsId }: { lmsId: string }) {
     }
 
     await prisma.lMS.delete({ where: { id: lmsId } });
+    revalidatePath('/lms');
+
     return { success: true, message: 'LMS deleted successfully' };
   } catch (error) {
     console.error('Failed to delete LMS:', error);
@@ -146,6 +148,8 @@ export async function updateLMS(prevState: any, formData: FormData) {
         description 
       }
     });
+    revalidatePath('/lms');
+
     return { success: true, message: 'LMS updated successfully' };
   } catch (error) {
     console.error('Failed to update LMS:', error);
@@ -231,6 +235,8 @@ export async function createChapter(prevState: any, formData: FormData) {
         orderIndex: newOrderIndex
       }
     });
+    revalidatePath('/lms');
+
 
     return { success: true, message: 'Chapter created successfully' };
   } catch (error) {
@@ -265,6 +271,8 @@ export async function updateChapter(prevState: any, formData: FormData) {
       where: { id: chapterId },
       data: { name }
     });
+    revalidatePath('/lms');
+
 
     return { success: true, message: 'Chapter updated successfully' };
   } catch (error) {
@@ -312,6 +320,8 @@ export async function createContent(prevState: any, formData: FormData) {
         orderIndex: newOrderIndex
       }
     });
+    revalidatePath('/lms');
+
 
     return { success: true, message: 'Content created successfully' };
   } catch (error) {
@@ -347,6 +357,7 @@ export async function updateContent(prevState: any, formData: FormData) {
       where: { id: contentId },
       data: { title, body }
     });
+    revalidatePath('/lms');
 
     return { success: true, message: 'Content updated successfully' };
   } catch (error) {
@@ -398,6 +409,8 @@ export async function deleteChapter(prevState: any, { chapterId }: { chapterId: 
         })
       )
     ]);
+    revalidatePath('/lms');
+
 
     return { success: true, message: 'Chapter deleted successfully' };
   } catch (error) {
@@ -457,6 +470,7 @@ export async function deleteContent(prevState: any, { contentId }: { contentId: 
         })
       )
     ]);
+    revalidatePath('/lms');
 
     return { success: true, message: 'Content deleted successfully' };
   } catch (error) {

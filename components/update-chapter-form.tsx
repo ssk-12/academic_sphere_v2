@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, startTransition } from 'react'
 import { useActionState } from 'react'
 import { updateChapter } from '@/actions/lms'
 import { Button } from '@/components/ui/button'
@@ -24,7 +24,9 @@ export function UpdateChapterForm({ chapter }: UpdateChapterFormProps) {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     formData.append('chapterId', chapter.id)
-    formAction(formData)
+    startTransition(() => {
+      formAction(formData)
+    })
   }
 
   useEffect(() => {

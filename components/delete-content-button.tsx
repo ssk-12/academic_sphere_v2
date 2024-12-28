@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, startTransition } from 'react'
 import { deleteContent } from '@/actions/lms'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
@@ -16,7 +16,9 @@ export function DeleteContentButton({ contentId }: DeleteContentButtonProps) {
   const [state, formAction, isPending] = useActionState(deleteContent, initialState)
 
   const handleDelete = () => {
-    formAction({ contentId })
+    startTransition(() => {
+      formAction({ contentId })
+    })
   }
 
   useEffect(() => {

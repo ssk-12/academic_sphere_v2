@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, startTransition } from 'react'
 import { useActionState } from 'react'
 import { updateContent } from '@/actions/lms'
 import { Button } from '@/components/ui/button'
@@ -25,7 +25,9 @@ export function UpdateContentForm({ content }: UpdateContentFormProps) {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     formData.append('contentId', content.id)
-    formAction(formData)
+    startTransition(() => {
+      formAction(formData)
+    })
   }
 
   useEffect(() => {

@@ -17,7 +17,12 @@ export function ChapterList({ chapters, isCreator }: ChapterListProps) {
   const [expandedChapter, setExpandedChapter] = useState<string | null>(null)
 
   return (
-    <Accordion type="single" collapsible className="w-full">
+    <Accordion
+      type="single"
+      collapsible
+      className="w-full"
+      onValueChange={(value) => setExpandedChapter(value)}
+    >
       {chapters.map((chapter) => (
         <AccordionItem key={chapter.id} value={chapter.id}>
           <div className="flex justify-between items-center w-full">
@@ -44,4 +49,3 @@ export function ChapterList({ chapters, isCreator }: ChapterListProps) {
     </Accordion>
   )
 }
-

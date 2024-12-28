@@ -5,7 +5,7 @@ import { useActionState } from 'react'
 import { deleteLMS } from '@/actions/lms'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
-import {useEffect} from 'react'
+import {useEffect, startTransition} from 'react'
 
 interface DeleteLMSButtonProps {
   lmsId: string
@@ -17,7 +17,9 @@ export function DeleteLMSButton({ lmsId }: DeleteLMSButtonProps) {
   const [state, formAction, isPending] = useActionState(deleteLMS, initialState)
 
   const handleDelete = () => {
-    formAction({ lmsId })
+    startTransition(() => {
+      formAction({ lmsId })
+    })
   }
 
   useEffect(() => {
