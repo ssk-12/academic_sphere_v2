@@ -71,7 +71,7 @@ export function ClassEvents({ events, id, creatorId }: { events: Event[], id: st
   return (
     <div className="mx-[3px] my-4">
       <Card className="w-full">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardHeader className="sm:flex sm:flex-row flex-col sm:items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-2xl font-bold">Class Events</CardTitle>
           <CreateEventForm id={id} />
         </CardHeader>
