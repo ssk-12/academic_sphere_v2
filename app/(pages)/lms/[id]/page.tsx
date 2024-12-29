@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { fetchLMSDetails } from '@/actions/lms'
-import { ChapterList } from '@/components/chapter-list'
-import { CreateChapterForm } from '@/components/create-chapter-form'
+import { ChapterList } from '@/components/lms/chapter-list'
+import { CreateChapterForm } from '@/components/lms/create-chapter-form'
 import { notFound } from 'next/navigation'
 
 export const revalidate = 0
