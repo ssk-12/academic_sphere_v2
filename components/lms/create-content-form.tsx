@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { useToast } from '@/hooks/use-toast'
+import MarkdownEditor from '../markdown/markdown-editor'
 
 interface CreateContentFormProps {
   chapterId: string
@@ -16,12 +17,14 @@ interface CreateContentFormProps {
 
 export function CreateContentForm({ chapterId }: CreateContentFormProps) {
   const [open, setOpen] = useState(false)
+  const [initalValue, setInitialValue] = useState("**Hello world!!!**");
   const { toast } = useToast()
   const initialState = { message: '', success: true }
   const [state, formAction, isPending] = useActionState(createContent, initialState)
 
   const handleSubmit = (formData: FormData) => {
     formData.append('chapterId', chapterId)
+    formData.append('body', initalValue)
     formAction(formData)
   }
 
@@ -54,7 +57,7 @@ export function CreateContentForm({ chapterId }: CreateContentFormProps) {
           </div>
           <div>
             <Label htmlFor="body">Content (Markdown supported)</Label>
-            <Textarea id="body" name="body" rows={10} required />
+            <MarkdownEditor intialValue={initalValue} setValueCallback={setInitialValue} />
           </div>
           <Button type="submit" disabled={isPending}>
             {isPending ? 'Creating...' : 'Create Content'}

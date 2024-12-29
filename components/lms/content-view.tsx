@@ -6,6 +6,7 @@ import { UpdateContentForm } from './update-content-form'
 import { DeleteContentButton } from './delete-content-button'
 import ReactMarkdown from 'react-markdown'
 import { FileText, Edit, Trash2 } from 'lucide-react'
+import MDEditor from '@uiw/react-md-editor'
 
 interface ContentViewProps {
   content: Content
@@ -30,7 +31,7 @@ export function ContentView({ content, isCreator }: ContentViewProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="prose max-w-none mt-6">
-        <ReactMarkdown>{content.body}</ReactMarkdown>
+        <MDEditor.Markdown source={content.body} style={{ whiteSpace: 'pre-wrap' }} />
       </CardContent>
     </Card>
   )
