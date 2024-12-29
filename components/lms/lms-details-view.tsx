@@ -6,6 +6,7 @@ import { Sidebar } from './sidebar'
 import { ContentView } from './content-view'
 import { Book, Lightbulb, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { useMediaQuery } from '@/hooks/use-media-query'
 
 interface LMSDetailsViewProps {
@@ -39,7 +40,7 @@ export function LMSDetailsView({ lms, isCreator }: LMSDetailsViewProps) {
   }
 
   return (
-    <div className="grid h-screen overflow-hidden bg-gradient-to-br from-purple-100 to-indigo-100 lg:grid-cols-[16rem,1fr]">
+    <div className="grid h-screen overflow-hidden bg-gradient-to-br from-purple-100 to-indigo-100 lg:grid-cols-[20rem,1fr]">
       {/* Sidebar */}
       <Sidebar
         lms={lms}
@@ -48,12 +49,12 @@ export function LMSDetailsView({ lms, isCreator }: LMSDetailsViewProps) {
         setSelectedChapter={setSelectedChapter}
         selectedContent={selectedContent}
         setSelectedContent={handleContentSelect}
-        className={`overflow-y-auto transition-transform duration-300 ease-in-out ${
+        className={`transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } ${isLargeScreen ? 'lg:col-start-1 lg:translate-x-0' : 'fixed inset-y-0 left-0 z-50 w-64'}`}
       />
       {/* Main Content */}
-      <main className="overflow-y-auto lg:col-start-2">
+      <ScrollArea className="lg:col-start-2">
         <div className="max-w-4xl mx-auto p-4 lg:p-8">
           {/* Header */}
           <header className="mb-8 text-center relative">
@@ -83,7 +84,7 @@ export function LMSDetailsView({ lms, isCreator }: LMSDetailsViewProps) {
             </div>
           )}
         </div>
-      </main>
+      </ScrollArea>
     </div>
   )
 }
