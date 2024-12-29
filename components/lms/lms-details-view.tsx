@@ -39,7 +39,7 @@ export function LMSDetailsView({ lms, isCreator }: LMSDetailsViewProps) {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row h-full min-h-screen bg-gradient-to-br from-purple-100 to-indigo-100">
+    <div className="grid h-screen overflow-hidden bg-gradient-to-br from-purple-100 to-indigo-100 lg:grid-cols-[16rem,1fr]">
       {/* Sidebar */}
       <Sidebar
         lms={lms}
@@ -48,13 +48,13 @@ export function LMSDetailsView({ lms, isCreator }: LMSDetailsViewProps) {
         setSelectedChapter={setSelectedChapter}
         selectedContent={selectedContent}
         setSelectedContent={handleContentSelect}
-        className={`lg:w-1/4 w-full flex-shrink-0 transition-all duration-300 ease-in-out ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        } ${isLargeScreen ? 'relative' : 'fixed inset-y-0 left-0 z-50'}`}
+        className={`overflow-y-auto transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } ${isLargeScreen ? 'lg:col-start-1 lg:translate-x-0' : 'fixed inset-y-0 left-0 z-50 w-64'}`}
       />
       {/* Main Content */}
-      <main className="flex-grow p-4 lg:p-8 overflow-auto">
-        <div className="max-w-4xl mx-auto">
+      <main className="overflow-y-auto lg:col-start-2">
+        <div className="max-w-4xl mx-auto p-4 lg:p-8">
           {/* Header */}
           <header className="mb-8 text-center relative">
             <Button
@@ -87,3 +87,4 @@ export function LMSDetailsView({ lms, isCreator }: LMSDetailsViewProps) {
     </div>
   )
 }
+
