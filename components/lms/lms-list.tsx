@@ -21,16 +21,16 @@ export function LMSList({ title, lmsList }: LMSListProps) {
           <Card key={lms.id}>
             <CardHeader>
               <CardTitle>{lms.name}</CardTitle>
-              {/* <CardDescription>{lms.description}</CardDescription> */}
+              <CardDescription>{lms.description}</CardDescription>
             </CardHeader>
             <CardContent>
               {/* <p>Created at: {new Date(lms.createdAt).toLocaleDateString()}</p> */}
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter className="flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:space-x-2">
               <Link href={`/lms/${lms.id}`} passHref>
                 <Button variant="outline">View Details</Button>
               </Link>
-              <div className="space-x-2">
+              <div className="flex space-x-2">
                 <UpdateLMSForm lms={lms} />
                 <DeleteLMSButton lmsId={lms.id} />
               </div>

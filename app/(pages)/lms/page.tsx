@@ -10,12 +10,11 @@ export default async function LMSPage() {
   const userId = session?.user?.id;
   const { privateLMS, publicLMS } = await fetchLMSList()
 
-  console.log(privateLMS, publicLMS)
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Learning Management Systems</h1>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold mb-4 md:mb-0">LMS</h1>
         <CreateLMSForm userId={userId}/>
       </div>
       
