@@ -357,7 +357,7 @@ export async function updateContent(prevState: any, formData: FormData) {
       where: { id: contentId },
       data: { title, body }
     });
-    revalidatePath('/lms');
+    revalidatePath('/lms/[id]');
 
     return { success: true, message: 'Content updated successfully' };
   } catch (error) {
@@ -470,7 +470,7 @@ export async function deleteContent(prevState: any, { contentId }: { contentId: 
         })
       )
     ]);
-    revalidatePath('/lms');
+    revalidatePath('/lms/[id]');
 
     return { success: true, message: 'Content deleted successfully' };
   } catch (error) {
