@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { DeleteLMSButton } from './delete-lms-button'
 import { UpdateLMSForm } from './update-lms-form'
+import { useEffect, useState } from 'react'
 
 interface LMSListProps {
   title: string
@@ -13,18 +14,25 @@ interface LMSListProps {
 }
 
 export function LMSList({ title, lmsList }: LMSListProps) {
+  const [formattedDates, setFormattedDates] = useState<string[]>([]);
+
+  useEffect(() => {
+    const dates = lmsList.map(lms => new Date(lms.createdAt).toLocaleDateString());
+    setFormattedDates(dates);
+  }, [lmsList]);
+
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">{title}</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {lmsList.map((lms) => (
+        {lmsList.map((lms, index) => (
           <Card key={lms.id}>
             <CardHeader>
               <CardTitle>{lms.name}</CardTitle>
               <CardDescription>{lms.description}</CardDescription>
             </CardHeader>
             <CardContent>
-              {/* <p>Created at: {new Date(lms.createdAt).toLocaleDateString()}</p> */}
+              <p>Created at: {formattedDates[index]}</p>
             </CardContent>
             <CardFooter className="flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:space-x-2">
               <Link href={`/lms/${lms.id}`} passHref>
