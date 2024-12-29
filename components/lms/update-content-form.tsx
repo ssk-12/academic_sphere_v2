@@ -46,7 +46,7 @@ export function UpdateContentForm({ content }: UpdateContentFormProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">Update</Button>
+        <Button className='text-black' variant="outline" size="sm">Update</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

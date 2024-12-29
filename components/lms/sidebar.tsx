@@ -31,11 +31,11 @@ export function Sidebar({
   return (
     <aside
       className={clsx(
-        'bg-white shadow-lg overflow-hidden flex flex-col',
+        'bg-white shadow-lg overflow-hidden flex flex-col max-h-screen',
         className
       )}
     >
-      <div className="p-4 bg-indigo-600 text-white flex justify-between items-center">
+      <div className="px-4 py-[13px] bg-indigo-600 text-white flex justify-between items-center">
         <h2 className="text-xl font-semibold">Chapters</h2>
         <Button
           variant="ghost"
@@ -46,7 +46,7 @@ export function Sidebar({
           <X className="h-4 w-4" />
         </Button>
       </div>
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 overflow-auto">
         <Accordion type="single" collapsible className="w-full">
           {lms.chapters.map((chapter) => (
             <AccordionItem key={chapter.id} value={chapter.id}>
