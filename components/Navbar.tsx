@@ -235,7 +235,7 @@ export function Navbar({
           className="relative"
         >
           <ScrollArea className={`h-full w-full `}>
-            <div className="p-4">{children}</div>
+            <div >{children}</div>
           </ScrollArea>
         </ResizablePanel>
       </ResizablePanelGroup>

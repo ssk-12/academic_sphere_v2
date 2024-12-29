@@ -4,10 +4,10 @@ import { LMS, Chapter, Content } from '@prisma/client'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { CreateChapterForm } from './create-chapter-form'
-import { UpdateChapterForm } from './update-chapter-form'
-import { DeleteChapterButton } from './delete-chapter-button'
 import { CreateContentForm } from './create-content-form'
-import { ChevronRight, FileText, FolderOpen } from 'lucide-react'
+import { ChevronRight, FileText, FolderOpen, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import clsx from 'clsx'
 
 interface SidebarProps {
   lms: LMS & { chapters: (Chapter & { contents: Content[] })[] }
@@ -16,6 +16,7 @@ interface SidebarProps {
   setSelectedChapter: (chapter: Chapter | null) => void
   selectedContent: Content | null
   setSelectedContent: (content: Content | null) => void
+  className?: string
 }
 
 export function Sidebar({
@@ -25,11 +26,25 @@ export function Sidebar({
   setSelectedChapter,
   selectedContent,
   setSelectedContent,
+  className,
 }: SidebarProps) {
   return (
-    <aside className="w-80 bg-white shadow-lg overflow-hidden flex flex-col">
-      <div className="p-4 bg-indigo-600 text-white">
+    <aside
+      className={clsx(
+        'bg-white shadow-lg overflow-hidden flex flex-col',
+        className
+      )}
+    >
+      <div className="p-4 bg-indigo-600 text-white flex justify-between items-center">
         <h2 className="text-xl font-semibold">Chapters</h2>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="lg:hidden text-white hover:text-indigo-200"
+          onClick={() => setSelectedContent(null)}
+        >
+          <X className="h-4 w-4" />
+        </Button>
       </div>
       <ScrollArea className="flex-1">
         <Accordion type="single" collapsible className="w-full">

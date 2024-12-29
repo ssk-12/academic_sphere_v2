@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { fetchLMSList } from '@/actions/lms'
 import { CreateLMSForm } from '@/components/lms/create-lms-form'
-import { LMSList } from '@/components/lms-list'
+import { LMSList } from '@/components/lms/lms-list'
 import { auth } from '@/auth'
 
 
